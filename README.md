@@ -20,16 +20,27 @@ documentation。也可采用其他文献提出的认知任务模拟方式，如 
 
 ### 课题要求的参考文献
 参考文献
+
 [1] M. Molano-Mazón et al., “NeuroGym: An open resource for developing and sharing neuroscience tasks,” Feb. 2022, doi: 10.31234/osf.io/aqc9n.
+
 [2] G. R. Yang, M. R. Joglekar, H. F. Song, W. T. Newsome, and X.-J. Wang, “Task representations in neural networks trained to perform many cognitive tasks,” Nat Neurosci, vol. 22, no. 2, pp.297–306, Feb. 2019, doi: 10.1038/s41593-018-0310-2.
+
 [3] G. M. van de Ven, T. Tuytelaars, and A. S. Tolias, “Three types of incremental learning,” Nature Machine Intelligence, vol. 4, no. 12, Art. no. 12, Dec. 2022, doi: 10.1038/s42256-022-00568-3.
+
 [4] R. Saxena, J. L. Shobe, and B. L. McNaughton, “Learning in deep neural networks and brains with similarity-weighted interleaved learning,” Proc. Natl. Acad. Sci., vol. 119, no. 27, p.e2115229119, Jul. 2022, doi: 10.1073/pnas.2115229119.
+
 [5] M. De Lange et al., “A Continual Learning Survey: Defying Forgetting in Classification Tasks,” IEEE Trans. Pattern Anal. Mach. Intell., vol. 44, no. 7, pp. 3366–3385, Jul. 2022, doi:10.1109/TPAMI.2021.3057446.
+
 [6] B. Ehret, C. Henning, M. Cervera, A. Meulemans, J. V. Oswald, and B. F. Grewe, “Continual learning in recurrent neural networks,” presented at the International Conference on Learning Representations, Jan. 2021. Available: https://openreview.net/forum?id=8xeBUgD8u9
+
 [7] G. M. van de Ven, H. T. Siegelmann, and A. S. Tolias, “Brain-inspired replay for continual learning with artificial neural networks,” Nat. Commun., vol. 11, no. 1, p. 4069, Aug. 2020, doi: 10.1038/s41467-020-17866-2.
+
 [8] R. Hadsell, D. Rao, A. A. Rusu, and R. Pascanu, “Embracing Change: Continual Learning in Deep Neural Networks,” Trends in Cognitive Sciences, vol. 24, no. 12, pp. 1028–1040, Dec.2020, doi: 10.1016/j.tics.2020.09.004.
+
 [9] 朱飞, 张煦尧, and 刘成林, “类别增量学习研究进展和性能评价,” 自动化学报, vol. 49,no. 3, pp. 635–660, Mar. 2023.
+
 [10] T. Zhang, X. Cheng, S. Jia, C. T. Li, M. Poo, and B. Xu, “A brain-inspired algorithm that mitigates catastrophic forgetting of artificial and spiking neural networks with low computational cost,” Sci. Adv., vol. 9, no. 34, p. eadi2947, Aug. 2023, doi:10.1126/sciadv.adi2947.
+
 [11] G. Zeng, Y. Chen, B. Cui, and S. Yu, “Continual learning of context-dependent processing in neural networks,” Nat Mach Intell, vol. 1, no. 8, pp. 364–372, Aug. 2019, doi: 10.1038/s42256-019-0080-x.
 
 ## 认知神经科学课程论文要求
@@ -65,8 +76,13 @@ zhengliting23@mails.ucas.ac.cn
 
 
 ## 任务分工
+
 任务一：郑子辰，伍昱衡
+
 任务二：苏冠豪
+
 任务三：五人一起写文章
+
 任务四：张硕
+
 任务五：尹超
