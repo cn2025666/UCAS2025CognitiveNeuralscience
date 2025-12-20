@@ -1,0 +1,6 @@
+torch
+gymnasium
+neurogym
+numpy
+matplotlib
+scikit-learn
