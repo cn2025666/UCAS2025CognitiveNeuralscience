@@ -1,0 +1,10 @@
+\contentsline {chapter}{序言}{I}{Doc-Start}%
+\contentsline {chapter}{目录}{II}{chapter*.1}%
+\contentsline {chapter}{\numberline {1}Part 5: 真实环境下的认知任务仿真与分析}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}改进思路与生物学启发}{1}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}引入感知噪声 (Sensory Noise)}{1}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}引入时间变异性 (Temporal Variability)}{1}{subsection.1.1.2}%
+\contentsline {section}{\numberline {1.2}代码实现}{1}{section.1.2}%
+\contentsline {section}{\numberline {1.3}实验结果与分析}{2}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}环境复杂度对模型性能的影响}{2}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}真实环境对灾难性遗忘的影响}{4}{subsection.1.3.2}%

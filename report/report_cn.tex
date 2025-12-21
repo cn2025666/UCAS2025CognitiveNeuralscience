@@ -1,0 +1,692 @@
+% 若编译失败，且生成 .synctex(busy) 辅助文件，可能有两个原因：
+% 1. 需要插入的图片不存在：Ctrl + F 搜索 'figure' 将这些代码注释/删除掉即可
+% 2. 路径/文件名含中文或空格：更改路径/文件名即可
+
+% ------------------------------------------------------------- %
+% >> ------------------ 文章宏包及相关设置 ------------------ << %
+% 设定文章类型与编码格式
+\documentclass[UTF8]{report}		
+
+% 本文特殊宏包
+\usepackage{siunitx} % 埃米单位
+
+% 本 .tex 专属的宏定义
+    \def\V{\ \mathrm{V}}
+    \def\mV{\ \mathrm{mV}}
+    \def\kV{\ \mathrm{KV}}
+    \def\KV{\ \mathrm{KV}}
+    \def\MV{\ \mathrm{MV}}
+    \def\A{\ \mathrm{A}}
+    \def\mA{\ \mathrm{mA}}
+    \def\kA{\ \mathrm{KA}}
+    \def\KA{\ \mathrm{KA}}
+    \def\MA{\ \mathrm{MA}}
+    \def\O{\ \Omega}
+    \def\mO{\ \Omega}
+    \def\kO{\ \mathrm{K}\Omega}
+    \def\KO{\ \mathrm{K}\Omega}
+    \def\MO{\ \mathrm{M}\Omega}
+    \def\Hz{\ \mathrm{Hz}}
+
+% 自定义宏定义
+    \def\N{\mathbb{N}}
+    \def\F{\mathbb{F}}
+    \def\Z{\mathbb{Z}}
+    \def\Q{\mathbb{Q}}
+    \def\R{\mathbb{R}}
+    \def\C{\mathbb{C}}
+    \def\T{\mathbb{T}}
+    \def\S{\mathbb{S}}
+    \def\A{\mathbb{A}}
+    \def\I{\mathscr{I}}
+    \def\Im{\mathrm{Im\,}}
+    \def\Re{\mathrm{Re\,}}
+    \def\d{\mathrm{d}}
+    \def\p{\partial}
+
+% 导入基本宏包
+    \usepackage[UTF8]{ctex}     % 设置文档为中文语言
+    \usepackage[colorlinks, linkcolor=blue, anchorcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}  % 宏包：自动生成超链接 (此宏包与标题中的数学环境冲突)
+    % \usepackage{hyperref}  % 宏包：自动生成超链接 (此宏包与标题中的数学环境冲突)
+    % \hypersetup{
+    %     colorlinks=true,    % false:边框链接 ; true:彩色链接
+    %     citecolor={blue},    % 文献引用颜色
+    %     linkcolor={blue},   % 目录 (我们在目录处单独设置)，公式，图表，脚注等内部链接颜色
+    %     urlcolor={orange},    % 网页 URL 链接颜色，包括 \href 中的 text
+    %     % cyan 浅蓝色 
+    %     % magenta 洋红色
+    %     % yellow 黄色
+    %     % black 黑色
+    %     % white 白色
+    %     % red 红色
+    %     % green 绿色
+    %     % blue 蓝色
+    %     % gray 灰色
+    %     % darkgray 深灰色
+    %     % lightgray 浅灰色
+    %     % brown 棕色
+    %     % lime 石灰色
+    %     % olive 橄榄色
+    %     % orange 橙色
+    %     % pink 粉红色
+    %     % purple 紫色
+    %     % teal 蓝绿色
+    %     % violet 紫罗兰色
+    % }
+
+    % \usepackage{docmute}    % 宏包：子文件导入时自动去除导言区，用于主/子文件的写作方式，\include{./51单片机笔记}即可。注：启用此宏包会导致.tex文件capacity受限。
+    \usepackage{amsmath}    % 宏包：数学公式
+    \usepackage{mathrsfs}   % 宏包：提供更多数学符号
+    \usepackage{amssymb}    % 宏包：提供更多数学符号
+    \usepackage{pifont}     % 宏包：提供了特殊符号和字体
+    \usepackage{extarrows}  % 宏包：更多箭头符号
+    \usepackage{multicol}   % 宏包：支持多栏 
+    \usepackage{graphicx}   % 宏包：插入图片
+    \usepackage{float}      % 宏包：设置图片浮动位置
+    %\usepackage{article}    % 宏包：使文本排版更加优美
+    \usepackage{tikz}       % 宏包：绘图工具
+    %\usepackage{pgfplots}   % 宏包：绘图工具
+    \usepackage{enumerate}  % 宏包：列表环境设置
+    \usepackage{enumitem}   % 宏包：列表环境设置
+    \usepackage[all]{xy} % 宏包：xy图形
+    \usepackage{tikz-cd} % 宏包：xy图形
+
+% 文章页面margin设置
+    \usepackage[a4paper]{geometry}
+        \geometry{top=1in}
+        \geometry{bottom=1in}
+        \geometry{left=0.75in}
+        \geometry{right=0.75in}   % 设置上下左右页边距
+        \geometry{marginparwidth=1.75cm}    % 设置边注距离（注释、标记等）
+
+% 定义 solution 环境
+\usepackage{amsthm}
+\newtheorem{solution}{Solution}
+        \geometry{bottom=1in}
+        \geometry{left=0.75in}
+        \geometry{right=0.75in}   % 设置上下左右页边距
+        \geometry{marginparwidth=1.75cm}    % 设置边注距离（注释、标记等）
+
+% 配置数学环境
+    \usepackage{amsthm} % 宏包：数学环境配置
+    % theorem-line 环境自定义
+        \newtheoremstyle{MyLineTheoremStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+            {：}% <punctuation after theorem head>
+            {.5em}% <space after theorem head>
+            {\textbf{#1}\thmnumber{#2}\ \ (\,\textbf{#3}\,)}% 设置标题内容顺序
+        \theoremstyle{MyLineTheoremStyle} % 应用自定义的定理样式
+        \newtheorem{LineTheorem}{Theorem.\,}
+    % theorem-block 环境自定义
+        \newtheoremstyle{MyBlockTheoremStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+            {：\\ \indent}% <punctuation after theorem head>
+            {.5em}% <space after theorem head>
+            {\textbf{#1}\thmnumber{#2}\ \ (\,\textbf{#3}\,)}% 设置标题内容顺序
+        \theoremstyle{MyBlockTheoremStyle} % 应用自定义的定理样式
+        \newtheorem{BlockTheorem}[LineTheorem]{Theorem.\,} % 使用 LineTheorem 的计数器
+    % definition 环境自定义
+        \newtheoremstyle{MySubsubsectionStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+           % {：\\ \indent}% <punctuation after theorem head>
+            {\\\indent}
+            {0pt}% <space after theorem head>
+            {\textbf{#3}}% 设置标题内容顺序
+        \theoremstyle{MySubsubsectionStyle} % 应用自定义的定理样式
+        \newtheorem{definition}{}
+
+%宏包：有色文本框（proof环境）及其设置
+    \usepackage[dvipsnames,svgnames]{xcolor}    %设置插入的文本框颜色
+    \usepackage[strict]{changepage}     % 提供一个 adjustwidth 环境
+    \usepackage{framed}     % 实现方框效果
+        \definecolor{graybox_color}{rgb}{0.95,0.95,0.96} % 文本框颜色。修改此行中的 rgb 数值即可改变方框纹颜色，具体颜色的rgb数值可以在网站https://colordrop.io/ 中获得。（截止目前的尝试还没有成功过，感觉单位不一样）（找到喜欢的颜色，点击下方的小眼睛，找到rgb值，复制修改即可）
+        \newenvironment{graybox}{%
+        \def\FrameCommand{%
+        \hspace{1pt}%
+        {\color{gray}\small \vrule width 2pt}%
+        {\color{graybox_color}\vrule width 4pt}%
+        \colorbox{graybox_color}%
+        }%
+        \MakeFramed{\advance\hsize-\width\FrameRestore}%
+        \noindent\hspace{-4.55pt}% disable indenting first paragraph
+        \begin{adjustwidth}{}{7pt}%
+        \vspace{2pt}\vspace{2pt}%
+        }
+        {%
+        \vspace{2pt}\end{adjustwidth}\endMakeFramed%
+        }
+
+
+
+% 外源代码插入设置
+    % matlab 代码插入设置
+    \usepackage{matlab-prettifier}
+        \lstset{style=Matlab-editor}    % 继承 matlab 代码高亮 , 此行不能删去
+    \usepackage[most]{tcolorbox} % 引入tcolorbox包 
+    \usepackage{listings} % 引入listings包
+        \tcbuselibrary{listings, skins, breakable}
+        \newfontfamily\codefont{Consolas} % 定义需要的 codefont 字体
+        \lstdefinestyle{MatlabStyle_inc}{   % 插入代码的样式
+            language=Matlab,
+            basicstyle=\small\ttfamily\codefont,    % ttfamily 确保等宽 
+            breakatwhitespace=false,
+            breaklines=true,
+            captionpos=b,
+            keepspaces=true,
+            numbers=left,
+            numbersep=15pt,
+            showspaces=false,
+            showstringspaces=false,
+            showtabs=false,
+            tabsize=2,
+            xleftmargin=15pt,   % 左边距
+            %frame=single, % single 为包围式单线框
+            frame=shadowbox,    % shadowbox 为带阴影包围式单线框效果
+            %escapeinside=``,   % 允许在代码块中使用 LaTeX 命令 (此行无用)
+            %frameround=tttt,    % tttt 表示四个角都是圆角
+            framextopmargin=0pt,    % 边框上边距
+            framexbottommargin=0pt, % 边框下边距
+            framexleftmargin=5pt,   % 边框左边距
+            framexrightmargin=5pt,  % 边框右边距
+            rulesepcolor=\color{red!20!green!20!blue!20}, % 阴影框颜色设置
+            %backgroundcolor=\color{blue!10}, % 背景颜色
+        }
+        \lstdefinestyle{MatlabStyle_src}{   % 插入代码的样式
+            language=Matlab,
+            basicstyle=\small\ttfamily\codefont,    % ttfamily 确保等宽 
+            breakatwhitespace=false,
+            breaklines=true,
+            captionpos=b,
+            keepspaces=true,
+            numbers=left,
+            numbersep=15pt,
+            showspaces=false,
+            showstringspaces=false,
+            showtabs=false,
+            tabsize=2,
+        }
+        \newtcblisting{matlablisting}{
+            %arc=2pt,        % 圆角半径
+            % 调整代码在 listing 中的位置以和引入文件时的格式相同
+            top=0pt,
+            bottom=0pt,
+            left=-5pt,
+            right=-5pt,
+            listing only,   % 此句不能删去
+            listing style=MatlabStyle_src,
+            breakable,
+            colback=white,   % 选一个合适的颜色
+            colframe=black!0,   % 感叹号后跟不透明度 (为 0 时完全透明)
+        }
+        \lstset{
+            style=MatlabStyle_inc,
+        }
+
+
+
+% table 支持
+    \usepackage{booktabs}   % 宏包：三线表
+    %\usepackage{tabularray} % 宏包：表格排版
+    %\usepackage{longtable}  % 宏包：长表格
+    %\usepackage[longtable]{multirow} % 宏包：multi 行列
+
+
+% figure 设置
+\usepackage{graphicx}   % 支持 jpg, png, eps, pdf 图片 
+\usepackage{float}      % 支持 H 选项
+\usepackage{svg}        % 支持 svg 图片
+\usepackage{subcaption} % 支持子图
+\svgsetup{
+        % 指向 inkscape.exe 的路径
+       inkscapeexe = C:/aa_MySame/inkscape/bin/inkscape.exe, 
+        % 一定程度上修复导入后图片文字溢出几何图形的问题
+       inkscapelatex = false                 
+   }
+
+% 图表进阶设置
+    \usepackage{caption}    % 图注、表注
+        \captionsetup[figure]{name=图}  
+        \captionsetup[table]{name=表}
+        \captionsetup{
+            labelfont=bf, % 设置标签为粗体
+            textfont=bf,  % 设置文本为粗体
+            font=small  
+        }
+    \usepackage{float}     % 图表位置浮动设置 
+        % \floatstyle{plaintop} % 设置表格标题在表格上方
+        % \restylefloat{table}  % 应用设置
+
+
+% 圆圈序号自定义
+    \newcommand*\circled[1]{\tikz[baseline=(char.base)]{\node[shape=circle,draw,inner sep=0.8pt, line width = 0.03em] (char) {\small \bfseries #1};}}   % TikZ solution
+
+
+% 列表设置
+    \usepackage{enumitem}   % 宏包：列表环境设置
+        \setlist[enumerate]{
+            label=\bfseries(\arabic*) ,   % 设置序号样式为加粗的 (1) (2) (3)
+            ref=\arabic*, % 如果需要引用列表项，这将决定引用格式（这里仍然使用数字）
+            itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em} 
+        \setlist[itemize]{itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em}
+        \newlist{circledenum}{enumerate}{1} % 创建一个新的枚举环境  
+        \setlist[circledenum,1]{  
+            label=\protect\circled{\arabic*}, % 使用 \arabic* 来获取当前枚举计数器的值，并用 \circled 包装它  
+            ref=\arabic*, % 如果需要引用列表项，这将决定引用格式（这里仍然使用数字）
+            itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em
+        }  
+
+% 文章默认字体设置
+    \usepackage{fontspec}   % 宏包：字体设置
+        \setmainfont{STKaiti}    % 设置中文字体为宋体字体
+        \setCJKmainfont[AutoFakeBold=3]{STKaiti} % 设置加粗字体为 STKaiti 族，AutoFakeBold 可以调整字体粗细
+        \setmainfont{Times New Roman} % 设置英文字体为Times New Roman
+
+
+% 其它设置
+    % 脚注设置
+    \renewcommand\thefootnote{\ding{\numexpr171+\value{footnote}}}
+    % 参考文献引用设置
+        \bibliographystyle{unsrt}   % 设置参考文献引用格式为unsrt
+        \newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}     % 自定义上角标式引用
+    % 文章序言设置
+        \newcommand{\cnabstractname}{序言}
+        \newenvironment{cnabstract}{%
+            \par\Large
+            \noindent\mbox{}\hfill{\bfseries \cnabstractname}\hfill\mbox{}\par
+            \vskip 2.5ex
+            }{\par\vskip 2.5ex}
+
+
+% 各级标题自定义设置
+    \usepackage{titlesec}   
+    % chapter
+        \titleformat{\chapter}[hang]{\normalfont\Large\bfseries\centering}{Chapter \thechapter }{10pt}{}
+        \titlespacing*{\chapter}{0pt}{-30pt}{10pt} % 控制上方空白的大小
+    % section
+        \titleformat{\section}[hang]{\normalfont\large\bfseries}{\thesection}{8pt}{}
+    % subsection
+        %\titleformat{\subsubsection}[hang]{\normalfont\bfseries}{}{8pt}{}
+    % subsubsection
+        %\titleformat{\subsubsection}[hang]{\normalfont\bfseries}{}{8pt}{}
+
+% 见到的一个有意思的对于公式中符号的彩色解释的环境
+        \usepackage[dvipsnames]{xcolor}
+        \usepackage{tikz}
+        \usetikzlibrary{backgrounds}
+        \usetikzlibrary{arrows,shapes}
+        \usetikzlibrary{tikzmark}
+        \usetikzlibrary{calc}
+        
+        \usepackage{amsmath}
+        \usepackage{amsthm}
+        \usepackage{amssymb}
+        \usepackage{mathtools, nccmath}
+        \usepackage{wrapfig}
+        \usepackage{comment}
+        
+        % To generate dummy text
+        \usepackage{blindtext}
+        
+        
+        %color
+        %\usepackage[dvipsnames]{xcolor}
+        % \usepackage{xcolor}
+        
+        
+        %\usepackage[pdftex]{graphicx}
+        \usepackage{graphicx}
+        % declare the path(s) for graphic files
+        %\graphicspath{{../Figures/}}
+        
+        % extensions so you won't have to specify these with
+        % every instance of \includegraphics
+        % \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+        
+        % for custom commands
+        \usepackage{xspace}
+        
+        % table alignment
+        \usepackage{array}
+        \usepackage{ragged2e}
+        \newcolumntype{P}[1]{>{\RaggedRight\hspace{0pt}}p{#1}}
+        \newcolumntype{X}[1]{>{\RaggedRight\hspace*{0pt}}p{#1}}
+        
+        % color box
+        \usepackage{tcolorbox}
+        
+        
+        % for tikz
+        \usepackage{tikz}
+        %\usetikzlibrary{trees}
+        \usetikzlibrary{arrows,shapes,positioning,shadows,trees,mindmap}
+        % \usepackage{forest}
+        \usepackage[edges]{forest}
+        \usetikzlibrary{arrows.meta}
+        \colorlet{linecol}{black!75}
+        \usepackage{xkcdcolors} % xkcd colors
+        
+        
+        % for colorful equation
+        \usepackage{tikz}
+        \usetikzlibrary{backgrounds}
+        \usetikzlibrary{arrows,shapes}
+        \usetikzlibrary{tikzmark}
+        \usetikzlibrary{calc}
+        % Commands for Highlighting text -- non tikz method
+        \newcommand{\highlight}[2]{\colorbox{#1!17}{$\displaystyle #2$}}
+        %\newcommand{\highlight}[2]{\colorbox{#1!17}{$#2$}}
+        \newcommand{\highlightdark}[2]{\colorbox{#1!47}{$\displaystyle #2$}}
+        
+        % my custom colors for shading
+        \colorlet{mhpurple}{Plum!80}
+        
+        
+        % Commands for Highlighting text -- non tikz method
+        \renewcommand{\highlight}[2]{\colorbox{#1!17}{#2}}
+        \renewcommand{\highlightdark}[2]{\colorbox{#1!47}{#2}}
+        
+        % Some math definitions
+        \newcommand{\lap}{\mathrm{Lap}}
+        \newcommand{\pr}{\mathrm{Pr}}
+        
+        \newcommand{\Tset}{\mathcal{T}}
+        \newcommand{\Dset}{\mathcal{D}}
+        \newcommand{\Rbound}{\widetilde{\mathcal{R}}}
+
+% >> ------------------ 文章宏包及相关设置 ------------------ << %
+% ------------------------------------------------------------- %
+
+
+
+% ----------------------------------------------------------- %
+% >> --------------------- 文章信息区 --------------------- << %
+% 页眉页脚设置
+
+\usepackage{fancyhdr}   %宏包：页眉页脚设置
+    \pagestyle{fancy}
+    \fancyhf{}
+    \cfoot{\thepage}
+    \renewcommand\headrulewidth{1pt}
+    \renewcommand\footrulewidth{0pt}
+    \chead{}
+    \lhead{}
+    \rhead{}
+
+%文档信息设置
+\title{认知神经科学课程报告\\ Cognitive Neuroscience Final Report}
+\author{苏冠豪\quad 伍昱衡 \quad 尹超 \quad 张硕 \quad 郑子辰 \\\footnotesize （按照姓氏首字母排序）\\ \footnotesize 中国科学院大学，北京 100049\\ \footnotesize University of Chinese Academy of Sciences, Beijing 100049, China}
+\date{\footnotesize \today}  % 设置日期为编译当天
+% >> --------------------- 文章信息区 --------------------- << %
+% ----------------------------------------------------------- %     
+
+
+% 开始编辑文章
+
+\begin{document}
+\zihao{5}           % 设置全文字号大小
+
+% --------------------------------------------------------------- %
+% >> --------------------- 封面序言与目录 --------------------- << %
+% 封面
+    \maketitle\newpage  
+    \pagenumbering{Roman} % 页码为大写罗马数字
+    \thispagestyle{fancy}   % 显示页码、页眉等
+
+% 序言
+    \begin{cnabstract}\normalsize 
+我们小组选择了\textbf{选题二：连续学习常见认知任务}，具体要求如下：
+
+一、课题背景
+
+人工智能在很多领域上处理特定任务的能力已经达到了人的平均水平，甚至远超人类。通常，衡量人工智能是否成功的一大准则就是判断其模仿人类学习的能力。在特定任务上，机器被给予真实世界或仿真模型中的大量数据用于训练以完成特定任务。但这一过程仅仅关注最终结果，而忽视了学习过程，因此也就不具备人类学习中一大重要特征，即能够灵活地切换需要完成的任务，又可以在训练过程中连续地积累知识和经验。世界是在发展和不断变化的，如果不能具备适应的能力，就很难被称为真正地拥有智能。然而，这样的强鲁棒性和当下主流机器学习（Machine Learning, ML）算法相矛盾，统计机器学习方法大多依赖于独立同分布数据假设，且需要预处理和筛选过、大量、均质化的数据样本进行学习。当数据发生变化或是样本空间增大时，ML 算法常常对新的任务无能为力，或是习得新任务后在先前学习的任务上表现不佳，这也被称为灾难性遗忘
+（Catastrophic Forgetting）。为了应对非静态环境下连续出现的任务序列，研究者提出了被称为连续学习（Continual learning）或增量学习（Incremental learning）的方法范式。连续学习帮助模型持续地积累知识，避免灾难性遗忘的发生，使得模型在面临新的知识时无需从头开始训练。当学习的任务相互关联时，当前任务的学习可以帮助模型在每个后续任务上取得更好的性能，或令模型在以前的任务上表现更好，这两种现象被分别称为前向迁移和后向迁移。在本课题中，利用感兴趣的连续学习方法训练模型，比较采用连续学习方法与否的模型表现差异，并分析结果。若能对于现有连续学习方法进行改进，并能借鉴认知神经科学原理、现象的，将视观点的新颖性和深入程度获得额外加分。要求提交完整实现代码，该连续学习方法是否有受到生物智能的启发？如果有，介绍其中涉及的认知神经科学机制。思考人工智能模型连续学习方法和人类认知的异同。
+
+二、数据
+
+采用模拟生成的认知任务作为训练集。NeuroGym 是基于 OpenAI Gym 开发的神经科学任务开源 Python 工具箱，提供心理学和认知科学常见的行为范式用于人工智能模型的训练 [1]。任务说明参考 Environments — neurogym
+documentation。也可采用其他文献提出的认知任务模拟方式，如 20-Cog-tasks[2]等。）
+
+
+三、课题内容
+
+（1）选择合适模型同时完成不少于10种认知任务，并给出模型的任务表现。评价指标应至少包含F1分数和MSE损失中的一种。
+
+（2）采用不少于2种连续学习方法，分别完成认知任务的训练，记录模型在每个任务完成训练时的任务评分。在所有任务完成训练后，对比每一种连续学习训练方式和一般训练方式的任务表现差异。重点关注连续学习是否能有效避免灾难性遗忘，甚至产生前向或后向知识迁移等学习优势。
+
+（3）在提交的报告中介绍连续学习的认知任务来源于何种认知实验，思考采用的连续学习方法和生物智能体学习方式之间的异同。连续学习后模型是否会更接近生物智能体？若能给出实验证据，例如激活表征、行为表现等，将额外加分。
+
+（4）（可选）改进现有连续学习方法，以提升多任务的连续学习性能。
+
+（5）（可选）考虑到 NEUROGYM 等工具仅提供了认知任务的简单模拟，其仿真实验过程与被试实际完成任务的过程存在诸多差异。改进先前用于训练模型的认知任务，使其更加接近现实世界的实验环境，并分析这种任务仿真形式的改变对模型性能的影响。
+    \end{cnabstract}
+    \addcontentsline{toc}{chapter}{序言} % 手动添加为目录
+
+
+% 目录
+\setcounter{tocdepth}{4}                % 目录深度（为1时显示到section）
+\tableofcontents                        % 目录页
+\addcontentsline{toc}{chapter}{目录}    % 手动添加此页为目录
+\thispagestyle{fancy}                   % 显示页码、页眉等 
+
+% 收尾工作
+    \newpage    
+    \pagenumbering{arabic} 
+
+% >> --------------------- 封面序言与目录 --------------------- << %
+% --------------------------------------------------------------- %
+
+
+\chapter{Part 5: 真实环境下的认知任务仿真与分析}
+
+\section{改进思路与生物学启发}
+
+考虑到 NeuroGym 等工具提供的认知任务通常是在理想化条件下进行的（无噪声、固定时间间隔），这与生物体在现实世界中面临的环境存在显著差异。为了更深入地探究人工智能模型与生物智能的异同，我们在本部分对实验环境进行了两项关键改进，旨在模拟更真实的生物认知环境。
+
+\subsection{引入感知噪声 (Sensory Noise)}
+现实世界中的感官输入永远不是完美的，总是伴随着噪声。生物神经系统本身也充满了噪声，例如突触传递的随机性和感觉器官的固有噪声。然而，大脑能够通过群体编码（Population Coding）和吸引子动力学（Attractor Dynamics）等机制，在充满噪声的环境中维持稳定的表征。
+
+我们在模型接收的观测数据中添加了高斯噪声（Gaussian Noise, $\sigma=0.2$）。这一改进旨在测试模型是否不仅仅是拟合了干净的数据，而是学习到了鲁棒的神经表征，能够像生物大脑一样从嘈杂的输入中提取有效信息。
+
+\subsection{引入时间变异性 (Temporal Variability)}
+在标准的认知实验模拟中，刺激呈现（Fixation）、延迟（Delay）和决策（Decision）的时间通常是固定的。然而，在自然环境中，事件的时间进程往往具有高度的不确定性。生物体的前额叶皮层（PFC）和海马体被认为在跨越不确定时间间隔维持工作记忆方面起着关键作用。
+
+我们将任务中的关键时间阶段从固定时长改为在一定范围内随机采样（Uniform Distribution）。例如，延迟阶段不再是固定的 500ms，而是在 [200ms, 1000ms] 之间随机变化。这迫使模型学习更通用的动力学机制（如神经积分器或持续活动），而不是简单地通过“计数”固定的时间步来解决任务。
+
+\section{代码实现}
+
+为了实现上述改进，我们编写了 \texttt{realistic\_experiment.py}。以下是核心代码片段，展示了如何构建具有时间变异性的环境以及如何注入感知噪声。
+
+\begin{lstlisting}[style=MatlabStyle_inc, caption={真实环境构建与噪声注入代码片段}]
+# 1. 定义时间变异性参数
+timing_kwargs = {
+    'timing': {
+        'fixation': ('uniform', [100, 300]), # 注视期随机化
+        'delay': ('uniform', [200, 1000]),   # 延迟期大幅随机化
+        'decision': ('uniform', [200, 600])  # 决策期随机化
+    }
+}
+sigma_noise = 0.2 # 噪声标准差
+
+# 2. 环境初始化与噪声注入
+def get_batch(task_idx, batch_size=16, seed_offset=0):
+    # ... (省略部分代码)
+    # 使用 numpy 的随机状态来生成噪声，确保可复现
+    rng = np.random.RandomState(task_idx * 1000 + seed_offset)
+
+    for b in range(batch_size):
+        obs, _ = env.reset(seed=task_idx * 1000 + seed_offset + b)
+        for t in range(MAX_SEQ_LEN):
+            # 手动添加高斯噪声
+            noise = rng.normal(0, sigma_noise, size=obs.shape)
+            batch_obs[b, t, :obs.shape[0]] = obs + noise
+            
+            # ... (环境步进)
+\end{lstlisting}
+
+\section{实验结果与分析}
+
+\subsection{环境复杂度对模型性能的影响}
+
+我们在改进后的“真实环境”中重新训练并评估了 LSTM, GRU, CTRNN 三种模型。图 \ref{fig:realistic_comparison} 展示了三种模型在 10 个认知任务上的 F1 分数对比。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{assets/realistic_comparison.png}
+    \caption{真实环境（噪声+可变时间）下三种模型的性能对比}
+    \label{fig:realistic_comparison}
+\end{figure}
+
+为了更直观地展示环境变化带来的影响，我们将 Part 1（基线环境）与 Part 5（真实环境）的性能进行了直接对比，如图 \ref{fig:impact_analysis} 所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/impact_analysis.png}
+    \caption{基线环境与真实环境的模型性能差异分析}
+    \label{fig:impact_analysis}
+\end{figure}
+
+从图中可以观察到：
+\begin{enumerate}
+    \item \textbf{普遍性能下降}：引入噪声和时间不确定性后，所有模型的性能在大多数任务上都出现了下降。特别是 \texttt{AntiReach} 和 \texttt{ContextDM} 等任务，受噪声影响较为严重。
+    \item \textbf{模型鲁棒性差异}：LSTM 和 GRU 凭借其门控机制（Gating Mechanisms），在处理长时程依赖和噪声干扰方面表现出比 CTRNN 更好的鲁棒性。CTRNN 在 \texttt{AntiReach} 任务上的 F1 分数下降最为显著（从 0.91 降至 0.25），表明简单的循环神经网络难以在强噪声下维持精确的运动轨迹预测。
+    \item \textbf{部分任务的适应性}：值得注意的是，在 \texttt{GoNogo} 和 \texttt{EconomicDM} 等任务上，模型依然保持了接近满分的表现，说明这些任务的核心特征较为显著，不易受环境扰动影响。
+\end{enumerate}
+
+表 \ref{tab:realistic_scores} 详细列出了三种模型在真实环境下的具体 F1 分数。
+
+\begin{table}[H]
+    \centering
+    \caption{真实环境下各模型 F1 分数汇总}
+    \label{tab:realistic_scores}
+    \begin{tabular}{lcccccccccc}
+        \toprule
+        Task & AntiReach & ContextDM & DelayComp & MatchCat & MatchSample & Distractor & PairedAssoc & DualMatch & EconomicDM & GoNogo \\
+        \midrule
+        LSTM & 0.77 & 0.43 & 0.81 & 0.65 & 0.65 & 1.00 & 0.72 & 0.59 & 1.00 & 0.99 \\
+        GRU & 0.65 & 0.38 & 0.77 & 0.57 & 0.67 & 1.00 & 1.00 & 0.67 & 1.00 & 0.99 \\
+        CTRNN & 0.25 & 0.41 & 0.74 & 0.58 & 0.79 & 1.00 & 0.99 & 0.59 & 1.00 & 0.96 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{真实环境对灾难性遗忘的影响}
+
+我们进一步探究了环境复杂度对连续学习中“灾难性遗忘”现象的影响。我们复现了 Part 1 中的顺序学习实验（Task 1: GoNogo $\to$ Task 2: DelayComp $\to$ Task 3: DMS），并对比了基线环境和真实环境下的遗忘曲线。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{assets/forgetting_comparison.png}
+    \caption{基线环境与真实环境下的灾难性遗忘对比}
+    \label{fig:forgetting_comparison}
+\end{figure}
+
+如图 \ref{fig:forgetting_comparison} 所示，我们观察到了一个非常有趣的现象：
+
+\begin{itemize}
+    \item \textbf{基线环境 (Baseline)}: Task 1 (GoNogo) 在学习后续任务后，F1 分数经历了剧烈的下降，从 1.00 跌至约 0.30，表现出严重的灾难性遗忘。
+    \item \textbf{真实环境 (Realistic)}: 虽然 Task 1 的初始学习性能略低（约 0.97），但在学习后续任务后，其 F1 分数维持在约 0.53。相比基线环境，\textbf{遗忘程度得到了缓解}（性能下降幅度更小）。
+\end{itemize}
+
+\textbf{分析与讨论}：
+这一结果表明，\textbf{噪声和时间变异性可能起到了类似“正则化”（Regularization）的作用}。在理想化的基线环境中，模型可能倾向于利用简单的、非鲁棒的特征（Shortcut Learning）来快速解决任务，这些特征在任务切换时极易被覆盖。而在充满噪声和不确定性的真实环境中，模型被迫学习更本质、更鲁棒的特征表示（例如更稳定的吸引子状态或更通用的时间积分机制）。这些鲁棒的特征在面临新任务的干扰时表现出了更强的稳定性，从而在一定程度上减轻了灾难性遗忘。这一发现与认知神经科学中关于“噪声在神经计算中的积极作用”的观点相呼应，也为改进连续学习算法提供了新的思路。
+
+
+
+
+
+
+
+
+
+
+% ----------------------------------------------------------- %
+% >> ---------------------- 参考文献 ---------------------- << %
+% \nocite{*}
+% \bibliography{re}
+% \thispagestyle{fancy} 
+% \addcontentsline{toc}{chapter}{参考文献}
+%这里要用到 bibtex，使用xelatex->bibtex->xelatex->xelatex编译链
+%同时要把re.bib文件放在同一目录下
+%下面是re.bib文件的内容
+% @book{knuth1984texbook,
+%   author    = {Donald E. Knuth},
+%   title     = {The TeXbook},
+%   year      = {1984},
+%   publisher = {Addison-Wesley},
+% }
+
+% @article{lamport1994latex,
+%   author  = {Leslie Lamport},
+%   title   = {LaTeX: A Document Preparation System},
+%   journal = {Addison-Wesley},
+%   year    = {1994},
+% }
+
+% @inproceedings{goossens1993latex,
+%   author    = {Michel Goossens and Frank Mittelbach and Alexander Samarin},
+%   title     = {The LaTeX Companion},
+%   booktitle = {Addison-Wesley Series on Tools and Techniques for Computer Typesetting},
+%   year      = {1993},
+% }
+
+% @misc{wikibibtex,
+%   author       = {Wikipedia contributors},
+%   title        = {BibTeX --- Wikipedia{,} The Free Encyclopedia},
+%   year         = {2024},
+%   url          = {https://en.wikipedia.org/wiki/BibTeX},
+%   note         = {Accessed: 2025-04-15}
+% }
+
+
+
+% >> ---------------------- 参考文献 ---------------------- << %
+% ----------------------------------------------------------- %
+
+
+
+% ------------------------------------------------------------ %
+% >> ------------------------ 附录 ------------------------ << %
+
+% % 附录设置
+% \newpage
+% \appendix
+% % chapter 标题自定义设置
+% \titleformat{\chapter}[hang]{\normalfont\huge\bfseries\centering}{}{20pt}{}
+% \titlespacing*{\chapter}{0pt}{-25pt}{8pt} % 控制上方空白的大小
+% % section 标题自定义设置 
+% \titleformat{\section}[hang]{\normalfont\centering\Large\bfseries}{\thesection}{8pt}{}
+
+
+
+
+
+
+% % 附录 B
+% \chapter*{附录 B. 代码}\addcontentsline{toc}{chapter}{附录 B. 代码}   
+% \thispagestyle{fancy} 
+% \setcounter{section}{0}   
+% \renewcommand\thesection{B.\arabic{section}}   
+% \renewcommand{\thefigure}{B.\arabic{figure}} 
+% \renewcommand{\thetable}{B.\arabic{table}}
+
+% 注意：listing环境中手动输入的代码需要顶格写
+
+
+
+
+% >> ------------------------ 附录 ------------------------ << %
+% ------------------------------------------------------------ %
+
+\end{document}
