@@ -488,6 +488,126 @@ documentation。也可采用其他文献提出的认知任务模拟方式，如 
 % --------------------------------------------------------------- %
 
 
+% --------------------------------------------------------------- %
+% >> --------------------- Part 1: 基线环境下的认知任务与连续学习实验 --------------------- << %
+\chapter{Part 1: 基线环境下的认知任务与连续学习实验}
+
+
+\section{任务描述与评价指标}
+本部分系统性地评估了三类循环神经网络（LSTM、GRU、CTRNN）在标准（理想化）认知任务环境下的表现。任务涵盖GoNogo、DelayComp、DMS（MatchSample）、AntiReach、ContextDM、MatchCat、Distractor、PairedAssoc、DualMatch、EconomicDM等10种典型认知任务，涉及工作记忆、抑制控制、决策等多种认知功能。
+
+每个任务均有明确定义的输入输出结构。模型表现采用F1分数和MSE损失两项指标进行综合评价，F1分数衡量分类准确性，MSE反映回归误差。
+
+\section{实验设置与流程}
+\subsection{数据生成与环境配置}
+所有任务均基于NeuroGym环境生成，输入数据无噪声，时间阶段（如fixation、delay、decision）均为固定时长。训练集和测试集独立采样，保证实验可复现性。
+
+\subsection{模型与训练方法}
+\begin{itemize}
+    \item \textbf{LSTM/GRU/CTRNN}: 代表性循环神经网络结构，具备不同的记忆与动态特性。
+    \item \textbf{顺序学习（Sequential Learning）}: 按顺序依次训练多个任务，考察灾难性遗忘现象。
+    \item \textbf{弹性权重固化（EWC）}: 通过对重要参数加以约束，缓解灾难性遗忘。
+\end{itemize}
+
+\section{实验设置}
+
+\subsection{数据生成与环境配置}
+所有任务均在标准NeuroGym环境下生成，输入数据无噪声，时间阶段（如fixation、delay、decision）均为固定时长。每个任务训练集和测试集均独立采样，保证实验的可复现性。
+
+\subsection{模型训练流程}
+\begin{enumerate}
+    \item \textbf{单任务训练}: 每个模型分别在单一任务上训练，获得最优性能作为基线。
+    \item \textbf{顺序多任务训练}: 按预设顺序依次训练多个任务，记录每个任务训练完成后的所有任务表现，考察灾难性遗忘。
+    \item \textbf{弹性权重固化（EWC）}: 在顺序训练基础上，加入EWC正则项，缓解遗忘。
+\end{enumerate}
+
+\section{模型表现与分析}
+\subsection{单任务表现：F1分数与MSE损失}
+三类模型在10个认知任务上的单任务训练过程中的loss与平均F1分数变化与最终F1分数如图\ref{fig:part1_compare}和图\ref{fig:part1_loss}所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{assets/part1/change.png}
+    \caption{三类模型在训练过程中的loss与平均F1变化对比}
+    \label{fig:part1_compare}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{assets/part1/compare.png}
+    \caption{三类模型在10种认知任务上的最终F1分数对比}
+    \label{fig:part1_loss}
+\end{figure}
+
+可以看出，GRU在大多数任务上均能取得较高的F1分数，以及loss随着轮次的增加降低较快，CTRNN在部分任务（如AntiReach）表现略逊。
+
+详细数值见表\ref{tab:baseline_scores_1}：
+\begin{table}[H]
+    \centering
+    \caption{基线环境下各模型单任务F1分数（前5个任务）}
+    \label{tab:baseline_scores_1}
+    \begin{tabular}{lccccc}
+        	oprule
+        Task & AntiReach & ContextDM & DelayComp & MatchCat & MatchSample \\
+        \midrule
+        LSTM & 0.91 & 0.65 & 0.92 & 0.81 & 0.82 \\
+        GRU & 0.89 & 0.62 & 0.90 & 0.79 & 0.80 \\
+        CTRNN & 0.91 & 0.63 & 0.89 & 0.80 & 0.85 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{基线环境下各模型单任务F1分数（后5个任务）}
+    \label{tab:baseline_scores_2}
+    \begin{tabular}{lccccc}
+        	oprule
+        Task & Distractor & PairedAssoc & DualMatch & EconomicDM & GoNogo \\
+        \midrule
+        LSTM & 1.00 & 0.88 & 0.75 & 1.00 & 1.00 \\
+        GRU & 1.00 & 1.00 & 0.80 & 1.00 & 1.00 \\
+        CTRNN & 1.00 & 1.00 & 0.77 & 1.00 & 0.99 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{顺序学习与灾难性遗忘}
+
+在顺序多任务训练中，模型在新任务学习后，先前任务的表现普遍下降，表现出灾难性遗忘。以“GoNogo $\to$ DelayComp $\to$ DMS”顺序为例，GoNogo任务的F1分数从1.00降至约0.30，遗忘现象显著。
+
+如图\ref{fig:part1_forget}所示，展示了顺序学习过程中各任务F1分数的变化趋势，直观反映了灾难性遗忘现象。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{assets/part1/forget.png}
+    \caption{顺序多任务训练中各任务F1分数变化，体现灾难性遗忘}
+    \label{fig:part1_forget}
+\end{figure}
+
+\subsection{EWC方法缓解遗忘效果}
+
+引入EWC后，模型在新任务学习后对旧任务的遗忘程度明显减轻。EWC通过对重要参数加权正则，促使模型在适应新任务的同时保留对旧任务的记忆。
+
+图\ref{fig:part1_ewc}展示了EWC方法下各任务F1分数的变化趋势，与普通顺序学习对比，遗忘现象得到有效缓解。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{assets/part1/ewc.png}
+    \caption{EWC方法下各任务F1分数变化，遗忘现象显著缓解}
+    \label{fig:part1_ewc}
+\end{figure}
+
+\subsection{模型结构对连续学习的影响}
+LSTM和GRU由于门控机制，在长时依赖和任务切换时表现出更好的稳定性。CTRNN在部分任务上更易遗忘，表明其表征能力有限。
+
+\section{小结与展望}
+在理想化的基线环境下，循环神经网络能够高效完成多种认知任务，但在顺序学习中普遍存在灾难性遗忘。EWC等连续学习方法可有效缓解遗忘，但仍有提升空间。后续章节将进一步探讨更真实环境下的模型表现及连续学习机制。
+
+% --------------------------------------------------------------- %
+% >> --------------------- Part 5: 真实环境下的认知任务仿真与分析 --------------------- << %
+
+
 \chapter{Part 5: 真实环境下的认知任务仿真与分析}
 
 \section{改进思路与生物学启发}

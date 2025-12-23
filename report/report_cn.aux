@@ -7,25 +7,53 @@
 \@writefile{toc}{\contentsline {chapter}{序言}{I}{Doc-Start}\protected@file@percent }
 \@writefile{toc}{\contentsline {chapter}{目录}{II}{chapter*.1}\protected@file@percent }
 \HyPL@Entry{3<</S/D>>}
-\@writefile{toc}{\contentsline {chapter}{\numberline {1}Part 5: 真实环境下的认知任务仿真与分析}{1}{chapter.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {1}Part 1: 基线环境下的认知任务与连续学习实验}{1}{chapter.1}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {1.1}改进思路与生物学启发}{1}{section.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1.1}引入感知噪声 (Sensory Noise)}{1}{subsection.1.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1.2}引入时间变异性 (Temporal Variability)}{1}{subsection.1.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {1.2}代码实现}{1}{section.1.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {1.1}{\ignorespaces 真实环境构建与噪声注入代码片段}}{1}{lstlisting.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {1.3}实验结果与分析}{2}{section.1.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.3.1}环境复杂度对模型性能的影响}{2}{subsection.1.3.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1.1}{\ignorespaces 真实环境（噪声+可变时间）下三种模型的性能对比}}{2}{figure.caption.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.1}任务描述与评价指标}{1}{section.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.2}实验设置与流程}{1}{section.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2.1}数据生成与环境配置}{1}{subsection.1.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2.2}模型与训练方法}{1}{subsection.1.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.3}实验设置}{1}{section.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3.1}数据生成与环境配置}{1}{subsection.1.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3.2}模型训练流程}{1}{subsection.1.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.4}模型表现与分析}{1}{section.1.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4.1}单任务表现：F1分数与MSE损失}{1}{subsection.1.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1.1}{\ignorespaces 三类模型在训练过程中的loss与平均F1变化对比}}{2}{figure.caption.2}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:realistic_comparison}{{1.1}{2}{真实环境（噪声+可变时间）下三种模型的性能对比}{figure.caption.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1.2}{\ignorespaces 基线环境与真实环境的模型性能差异分析}}{3}{figure.caption.3}\protected@file@percent }
-\newlabel{fig:impact_analysis}{{1.2}{3}{基线环境与真实环境的模型性能差异分析}{figure.caption.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {1.1}{\ignorespaces 真实环境下各模型 F1 分数汇总}}{4}{table.caption.4}\protected@file@percent }
-\newlabel{tab:realistic_scores}{{1.1}{4}{真实环境下各模型 F1 分数汇总}{table.caption.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.3.2}真实环境对灾难性遗忘的影响}{4}{subsection.1.3.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1.3}{\ignorespaces 基线环境与真实环境下的灾难性遗忘对比}}{4}{figure.caption.5}\protected@file@percent }
-\newlabel{fig:forgetting_comparison}{{1.3}{4}{基线环境与真实环境下的灾难性遗忘对比}{figure.caption.5}{}}
+\newlabel{fig:part1_compare}{{1.1}{2}{三类模型在训练过程中的loss与平均F1变化对比}{figure.caption.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.2}{\ignorespaces 三类模型在10种认知任务上的最终F1分数对比}}{2}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:part1_loss}{{1.2}{2}{三类模型在10种认知任务上的最终F1分数对比}{figure.caption.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1.1}{\ignorespaces 基线环境下各模型单任务F1分数（前5个任务）}}{2}{table.caption.4}\protected@file@percent }
+\newlabel{tab:baseline_scores_1}{{1.1}{2}{基线环境下各模型单任务F1分数（前5个任务）}{table.caption.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1.2}{\ignorespaces 基线环境下各模型单任务F1分数（后5个任务）}}{3}{table.caption.5}\protected@file@percent }
+\newlabel{tab:baseline_scores_2}{{1.2}{3}{基线环境下各模型单任务F1分数（后5个任务）}{table.caption.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4.2}顺序学习与灾难性遗忘}{3}{subsection.1.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1.3}{\ignorespaces 顺序多任务训练中各任务F1分数变化，体现灾难性遗忘}}{3}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:part1_forget}{{1.3}{3}{顺序多任务训练中各任务F1分数变化，体现灾难性遗忘}{figure.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4.3}EWC方法缓解遗忘效果}{3}{subsection.1.4.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1.4}{\ignorespaces EWC方法下各任务F1分数变化，遗忘现象显著缓解}}{4}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:part1_ewc}{{1.4}{4}{EWC方法下各任务F1分数变化，遗忘现象显著缓解}{figure.caption.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4.4}模型结构对连续学习的影响}{4}{subsection.1.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.5}小结与展望}{4}{section.1.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {2}Part 5: 真实环境下的认知任务仿真与分析}{5}{chapter.2}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {2.1}改进思路与生物学启发}{5}{section.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.1}引入感知噪声 (Sensory Noise)}{5}{subsection.2.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.2}引入时间变异性 (Temporal Variability)}{5}{subsection.2.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.2}代码实现}{5}{section.2.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.1}{\ignorespaces 真实环境构建与噪声注入代码片段}}{5}{lstlisting.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.3}实验结果与分析}{6}{section.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.1}环境复杂度对模型性能的影响}{6}{subsection.2.3.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces 真实环境（噪声+可变时间）下三种模型的性能对比}}{6}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:realistic_comparison}{{2.1}{6}{真实环境（噪声+可变时间）下三种模型的性能对比}{figure.caption.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.2}{\ignorespaces 基线环境与真实环境的模型性能差异分析}}{7}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:impact_analysis}{{2.2}{7}{基线环境与真实环境的模型性能差异分析}{figure.caption.9}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2.1}{\ignorespaces 真实环境下各模型 F1 分数汇总}}{8}{table.caption.10}\protected@file@percent }
+\newlabel{tab:realistic_scores}{{2.1}{8}{真实环境下各模型 F1 分数汇总}{table.caption.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.2}真实环境对灾难性遗忘的影响}{8}{subsection.2.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2.3}{\ignorespaces 基线环境与真实环境下的灾难性遗忘对比}}{8}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:forgetting_comparison}{{2.3}{8}{基线环境与真实环境下的灾难性遗忘对比}{figure.caption.11}{}}
 \gdef\svg@ink@ver@settings{{\m@ne }{C:/aa_MySame/inkscape/bin/inkscape.exe}{\m@ne }}
-\gdef \@abspage@last{7}
+\gdef \@abspage@last{11}
