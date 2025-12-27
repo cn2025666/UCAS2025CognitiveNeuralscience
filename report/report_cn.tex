@@ -709,6 +709,8 @@ Baseline 代表纯粹的可塑性（快速遗忘），Online EWC代表过度的�
     \caption{不同$\lambda$值下Online EWC的稳定性-可塑性权衡}
 \end{figure}
 
+而 Experience Replay 成功打破了这一僵局。它证明了ER是平衡两者的关键——生物大脑并非通过单纯锁定突触（EWC方式）来记忆，而是通过海马体在睡眠或休息时对过往经历的重放（Replay）来巩固皮层记忆。我们的 ER 模型在计算上模拟了这一过程。
+
 \subsection{知识迁移}
 连续学习的目标不仅在于抑制灾难性遗忘，还在于实现跨任务的知识迁移。本文从前向知识迁移（Forward Transfer, FWT）和后向知识迁移（Backward Transfer, BWT）两个方面对实验结果进行分析。
 
