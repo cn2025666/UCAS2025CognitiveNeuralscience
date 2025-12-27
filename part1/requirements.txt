@@ -1,6 +1,7 @@
 torch
-gymnasium
-neurogym
-numpy
+gymnasium==0.29.1   #未确定其余版本是否可行
+neurogym==2.2.0    #同上
+numpy              #已经确定。不要高于2.0.0，但未知具体情况（个人1.26.4）
 matplotlib
 scikit-learn
+
