@@ -1,5 +1,5 @@
 \contentsline {chapter}{序言}{I}{Doc-Start}%
-\contentsline {chapter}{目录}{II}{chapter*.1}%
+\contentsline {chapter}{目录}{III}{chapter*.1}%
 \contentsline {chapter}{\numberline {1}Part 1: 基线环境下的认知任务与连续学习实验}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}任务描述与评价指标}{1}{section.1.1}%
 \contentsline {section}{\numberline {1.2}实验设置与流程}{1}{section.1.2}%
@@ -14,11 +14,29 @@
 \contentsline {subsection}{\numberline {1.4.3}EWC方法缓解遗忘效果}{3}{subsection.1.4.3}%
 \contentsline {subsection}{\numberline {1.4.4}模型结构对连续学习的影响}{4}{subsection.1.4.4}%
 \contentsline {section}{\numberline {1.5}小结与展望}{4}{section.1.5}%
-\contentsline {chapter}{\numberline {2}Part 5: 真实环境下的认知任务仿真与分析}{5}{chapter.2}%
-\contentsline {section}{\numberline {2.1}改进思路与生物学启发}{5}{section.2.1}%
-\contentsline {subsection}{\numberline {2.1.1}引入感知噪声 (Sensory Noise)}{5}{subsection.2.1.1}%
-\contentsline {subsection}{\numberline {2.1.2}引入时间变异性 (Temporal Variability)}{5}{subsection.2.1.2}%
-\contentsline {section}{\numberline {2.2}代码实现}{5}{section.2.2}%
-\contentsline {section}{\numberline {2.3}实验结果与分析}{6}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}环境复杂度对模型性能的影响}{6}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}真实环境对灾难性遗忘的影响}{8}{subsection.2.3.2}%
+\contentsline {chapter}{\numberline {2}Part 2: 不同连续性学习方法的性能比对}{5}{chapter.2}%
+\contentsline {section}{\numberline {2.1}方法与实验设置}{5}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}认知任务序列}{5}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}模型架构}{5}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}连续学习策略}{5}{subsection.2.1.3}%
+\contentsline {section}{\numberline {2.2}实验结果与分析}{5}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}基线方法的灾难性遗忘}{5}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}正则化方法EWC}{6}{subsection.2.2.2}%
+\contentsline {subsubsection}{Standard EWC：约束失效}{6}{section*.8}%
+\contentsline {subsubsection}{归一化的EWC}{6}{section*.8}%
+\contentsline {subsubsection}{Online EWC：压缩带来性能损失}{6}{section*.8}%
+\contentsline {subsection}{\numberline {2.2.3}记忆回放方法ER}{6}{subsection.2.2.3}%
+\contentsline {subsubsection}{标准ER方法}{6}{section*.9}%
+\contentsline {subsubsection}{A-GEM方法}{7}{section*.9}%
+\contentsline {section}{\numberline {2.3}连续学习机制与生物智能}{8}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}稳定性-可塑性权衡}{8}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}知识迁移}{9}{subsection.2.3.2}%
+\contentsline {section}{\numberline {2.4}结论}{9}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Part 5: 真实环境下的认知任务仿真与分析}{10}{chapter.3}%
+\contentsline {section}{\numberline {3.1}改进思路与生物学启发}{10}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}引入感知噪声 (Sensory Noise)}{10}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}引入时间变异性 (Temporal Variability)}{10}{subsection.3.1.2}%
+\contentsline {section}{\numberline {3.2}代码实现}{10}{section.3.2}%
+\contentsline {section}{\numberline {3.3}实验结果与分析}{11}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}环境复杂度对模型性能的影响}{11}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}真实环境对灾难性遗忘的影响}{13}{subsection.3.3.2}%
