@@ -32,7 +32,7 @@
 \contentsline {subsection}{\numberline {2.3.1}稳定性-可塑性权衡}{8}{subsection.2.3.1}%
 \contentsline {subsection}{\numberline {2.3.2}知识迁移}{9}{subsection.2.3.2}%
 \contentsline {section}{\numberline {2.4}结论}{9}{section.2.4}%
-\contentsline {chapter}{\numberline {3}Part 5: 真实环境下的认知任务仿真与分析}{10}{chapter.3}%
+\contentsline {chapter}{\numberline {3}Part 4: 真实环境下的认知任务仿真与分析}{10}{chapter.3}%
 \contentsline {section}{\numberline {3.1}改进思路与生物学启发}{10}{section.3.1}%
 \contentsline {subsection}{\numberline {3.1.1}引入感知噪声 (Sensory Noise)}{10}{subsection.3.1.1}%
 \contentsline {subsection}{\numberline {3.1.2}引入时间变异性 (Temporal Variability)}{10}{subsection.3.1.2}%
@@ -40,3 +40,4 @@
 \contentsline {section}{\numberline {3.3}实验结果与分析}{11}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}环境复杂度对模型性能的影响}{11}{subsection.3.3.1}%
 \contentsline {subsection}{\numberline {3.3.2}真实环境对灾难性遗忘的影响}{13}{subsection.3.3.2}%
+\contentsline {chapter}{\numberline {4}总结陈述}{14}{chapter.4}%

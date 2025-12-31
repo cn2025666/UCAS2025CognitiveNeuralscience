@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.8.11)  28 DEC 2025 23:31
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.8.11)  1 JAN 2026 06:26
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1655,7 +1655,11 @@ File: assets/impact_analysis.png Graphic file (type bmp)
  [11] [12]
 File: assets/forgetting_comparison.png Graphic file (type bmp)
 <assets/forgetting_comparison.png>
- [13] (./report_cn.aux)
+ [13]
+Chapter 4.
+[14
+
+] (./report_cn.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2022/08/05>
@@ -1666,7 +1670,7 @@ LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 0.41063pt have occurred.
 
 Package rerunfilecheck Info: File `report_cn.out' has not changed.
-(rerunfilecheck)             Checksum: CFD97AD16B00573D5E936D2E9BADB697;5522.
+(rerunfilecheck)             Checksum: 65C02A265EA651736FF9A1917E6CE969;5598.
  ) 
 Here is how much of TeX's memory you used:
  57865 strings out of 476720
@@ -1677,4 +1681,4 @@ Here is how much of TeX's memory you used:
  36 hyphenation exceptions out of 8191
  94i,11n,102p,1617b,2912s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on report_cn.pdf (17 pages).
+Output written on report_cn.pdf (18 pages).
