@@ -726,6 +726,129 @@ Baseline 代表纯粹的可塑性（快速遗忘），Online EWC代表过度的�
 \end{enumerate}
 
 % --------------------------------------------------------------- %
+% >> --------------------- Part 4: 生物学启发的连续学习模型 --------------------- << %
+
+
+\chapter{Part 3: 生物学启发的连续学习模型}
+
+根据先前对已有连续学习模型的研究与我们对神经科学知识的了解，在这部分中我们尝试构建两种合理的连续学习模型。
+
+该部分使用的数据集以及随机数种子与先前实验相同，这样排除了偶然性，保证了实验可复现。
+
+\section{基线实验结果展示}
+
+我们选择连续学习效果较差的LSTM模型作为基线对照，改进的模型以LSTM为基本分类器。以下三图展示了该模型连续学习的效果。
+
+从图 \ref{fig:simple_task2losses} 能了解模型每一轮任务的训练速度，图 \ref{fig:simple_task2f1} 和图 \ref{fig:simple_task2f1_matrix} 展示的信息是相同的，都是模型每轮学习后在所有任务上的性能，其中图 \ref{fig:simple_task2f1} 从上到下、从左到右每张图是对应轮次训练后的结果，一张图是同一训练阶段的模型对10个任务的测试结果。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{assets/part3/simple_task2losses.png}
+    \caption{经典LSTM神经网络连续学习10轮选定任务过程中的损失变化}
+    \label{fig:simple_task2losses}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{assets/part3/simple_task2f1.png}
+    \caption{经典LSTM神经网络连续学习10轮选定任务过程中模型每轮对所有任务测试的F1变化}
+    \label{fig:simple_task2f1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{assets/part3/simple_task2f1_matrix.png}
+    \caption{经典LSTM神经网络连续学习10轮选定任务过程中的F1矩阵}
+    \label{fig:simple_task2f1_matrix}
+\end{figure}
+
+\section{模型构建思路}
+
+\begin{enumerate}
+    \item 模仿人类在持续学习过程中对于特定任务查找、联想并复习相关知识的习惯（经验表明人类这样的学习方式对于知识的归纳和组织的效果很好），在一般的非连续学习模型的新数据训练步骤中加入模型“复习”旧数据的过程。
+    \item 基于大脑新皮层覆盖旧皮层的类似机制（处理旧任务的模型并不会在新模型迭代中消失，而是相互整合），模型可以主动对任务类型进行区分，在学习过程中不断新建用来处理自我分类的问题的子模型，并将子模型整合到主模型中。
+\end{enumerate}
+
+\section{相似性加权交错学习模型（SWIL）}
+
+\subsection{模型结构描述}
+
+类似学生对旧的相似知识的“复习”。把模型权重参数整体视为一个参数空间，假设每一轮训练数据学习对参数空间中参数点的作用是线性的，参数点被柔性限制在几个方向构成的子空间内（类似罚函数机制），在补空间内不移动或移动很少，可以认为子空间特征向量方向对旧任务是关键的，新的学习鼓励改变补空间方向的参数点移动，惩罚子空间方向的参数点移动，为了限制子空间方向移动，在新的训练数据中加入与新数据（特征层的权重参数的余弦）相似度较大的旧数据一起训练，起到用旧数据限制旧任务主导参数方向的作用。
+
+这个连续学习方法已有类似先例，称为相似性加权交错学习（SWIL），本实验构建该模型的理念基本与之相同，但具体的细节是自主实现的。
+
+\subsection{实验结果与分析}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{assets/part3/SWIL_task2losses.png}
+    \caption{SWIL连续学习模型在10轮选定任务训练过程中的损失变化}
+    \label{fig:SWIL_task2losses}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{assets/part3/SWIL_task2f1.png}
+    \caption{SWIL连续学习模型在10轮选定任务训练过程中模型每轮对所有任务测试的F1变化}
+    \label{fig:SWIL_task2f1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{assets/part3/SWIL_task2f1_matrix.png}
+    \caption{SWIL连续学习模型在10轮选定任务训练过程中的F1矩阵}
+    \label{fig:SWIL_task2f1_matrix}
+\end{figure}
+
+从这些图中可以看到，SWIL模型连续学习的速度和经典模型差不多，但学习效果提高显著。
+
+事实上，与经典模型的训练过程相比，SWIL模型在学习时间上近似于经典模型学习新数据加少量旧数据所花的时间，在模型性能上近似于经典模型学习了所有历史数据（新数据和所有旧数据）后的性能。
+
+\section{分层混合专家模型（HME）}
+
+\subsection{模型结构描述}
+
+人类在处理某个问题时，会先了解这个问题属于哪种任务（或是其他类似的手段），然后自主选择相关的知识解决这个问题。
+
+模型也可以模仿这种思路：整个模型包括一个判断任务类型的一级分类器和若干个次级分类器。模型循环接收新任务的训练集和之前学的任务的测试集：训练过程中，模型先用每一个次级分类器对训练数据的一部分进行测试，得到若干个评估指标f1。如果所有f1都低于一个阈值，就加一个次级分类器，用训练数据来训练这个新分类器，一级分类器的应分类数量增加一个，删除原来的一级分类器，用事先存储的过去（包括本轮）问题和对应任务类型的信息来训练一个新实例化的一级分类器；如果至少存在一个f1高于阈值，取f1最大的那个次级分类器，用训练数据继续训练这个次级分类器，同样重新训练一个一级分类器。每轮循环的结尾进行测试和评估。
+
+事实上，这种模型架构是当前连续学习研究的热点，由于理论基础不完善，模型仍有很多缺陷：(1)连续学习过程中需要假设数据流的每一组任务数据属于同一任务类型。(2)模型训练过程中次级分类器不断增加，这可能会违反连续学习的内存有限性要求，只能假设随着模型学习的任务增加，模型趋向于把新任务归类为旧任务，迭代过程中任务数收敛。(3)每一轮学习的一级分类器都需要重新训练，这样对算力要求高，训练效率低，同时要求存储过去问题和对应任务类型的信息，但内存不能没有上限，初步的解决思路是随机丢弃问题信息，这样的模型遗忘是必然的，无法实现真正的连续学习。
+
+\subsection{实验结果与分析}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{assets/part3/HME_task2losses.png}
+    \caption{HME连续学习模型在10轮选定任务训练过程中的损失变化}
+    \label{fig:HME_task2losses}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{assets/part3/HME_task2f1.png}
+    \caption{HME连续学习模型在10轮选定任务训练过程中模型每轮对所有任务测试的F1变化}
+    \label{fig:HME_task2f1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{assets/part3/HME_task2f1_matrix.png}
+    \caption{HME连续学习模型在10轮选定任务训练过程中的F1矩阵}
+    \label{fig:HME_task2f1_matrix}
+\end{figure}
+
+从这些图中可以看到，在前文描述的这些假设下实现的HME模型，连续学习的性能非常好，灾难性遗忘的频率降低，遗忘时间大幅拉长。在训练时间方面，HME模型两层分类器和多次级分类器的架构对算力的要求很高，每轮训练需要的时间长，损失收敛需要的epoch数也很长，受限于网络深度以及学习率（训练时间过长不允许低学习率精确找到最优），损失常会出现收敛至较高值的情况。
+
+要实现真正可用于连续学习的HME模型，还需要用许多精巧的手段去除这些假设，同时降低模型的计算复杂度，提高模型的学习效率。目前组内探索但未实现的模型改进策略有：
+
+\begin{enumerate}
+    \item 使用多种方法综合评估任务数据集之间的相似度，而非简单地计算次级分类器对任务数据的分类效果（f1值）
+    \item 加深基础神经网络的层数和维数，提高模型的表达能力
+    \item 将一级分类器改为连续分类模型（即输入是问题，输出为问题类型的概率分布），解决一级分类器不断更新需要占用算力的问题
+    \item 将原本存储“例题”数据用于一级分类器训练的机制改为训练一个问题关联问题类型数据的生成器，使用生成器的生成数据训练一级分类器，避免存储过多的“例题”数据
+\end{enumerate}
+
+% --------------------------------------------------------------- %
 % >> --------------------- Part 5: 真实环境下的认知任务仿真与分析 --------------------- << %
 
 
