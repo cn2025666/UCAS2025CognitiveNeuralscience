@@ -7,7 +7,6 @@ import numpy as np
 import random
 from sklearn.metrics import f1_score
 import warnings
-import copy
 warnings.filterwarnings("ignore")
 
 def set_seed(seed=42):
@@ -22,13 +21,16 @@ def set_seed(seed=42):
     torch.backends.cudnn.benchmark = False
 set_seed(42)
 
-tasks_to_learn = ['GoNogo-v0', 'DelayComparison-v0', 'DelayMatchSample-v0']
+tasks_to_learn = ['AntiReach-v0', 'ContextDecisionMaking-v0', 'DelayComparison-v0',
+                 'DelayMatchCategory-v0', 'DelayMatchSample-v0', 'DelayMatchSampleDistractor1D-v0',
+                 'DelayPairedAssociation-v0', 'DualDelayMatchSample-v0', 'EconomicDecisionMaking-v0', 'GoNogo-v0']
 MAX_INPUT, MAX_OUTPUT = 33, 33
-HIDDEN_SIZE_PRIMARY = 64
-HIDDEN_SIZE_SECONDARY = 128
+HIDDEN_SIZE_PRIMARY = 512
+HIDDEN_SIZE_SECONDARY = 512
 NUM_TASKS = len(tasks_to_learn)
-MAX_SEQ_LEN = 50
-BATCH_SIZE = 16
+MAX_SEQ_LEN = 100
+BATCH_SIZE = 64
+EPOCHS = 2000
 
 envs = [gym.make(t) for t in tasks_to_learn]
 
@@ -51,31 +53,42 @@ def get_batch(task_idx, batch_size=BATCH_SIZE, seed_offset=0):
 class PrimaryClassifier(nn.Module):
     def __init__(self, input_size, hidden_size, num_classes):
         super().__init__()
-        # 直接使用MLP，因为特征已经取平均值
         self.fc1 = nn.Linear(input_size, hidden_size)
         self.fc2 = nn.Linear(hidden_size, num_classes)
-        self.dropout = nn.Dropout(0.3)
-    
+        self.dropout = nn.Dropout(0.1)
     def forward(self, x):
-        # x: (batch, features)
         out = F.relu(self.fc1(x))
         out = self.dropout(out)
         return self.fc2(out)
 
 class SecondaryClassifier(nn.Module):
-    """次级分类器：完成具体任务的LSTM模型"""
     def __init__(self, input_size, hidden_size, output_size, num_tasks=1):
         super().__init__()
-        # 每个次级分类器只处理一个任务，所以num_tasks=1
         self.lstm = nn.LSTM(input_size + num_tasks, hidden_size, batch_first=True)
         self.fc = nn.Linear(hidden_size, output_size)
-    def forward(self, x, task_id_onehot):
-        # x: (batch, seq_len, input_size)
-        # task_id_onehot: (batch, 1) 因为每个次级分类器只对应一个任务
+        # 存储任务特征统计
+        self.task_features_mean = None
+        self.original_samples = None  # 存储一些原任务样本
+    def forward(self, x, task_id_onehot, return_features=False):
         task_info = task_id_onehot.unsqueeze(1).repeat(1, x.size(1), 1)
         combined_input = torch.cat((x, task_info), dim=2)
-        out, _ = self.lstm(combined_input)
-        return self.fc(out)
+        lstm_out, (hidden_state, cell_state) = self.lstm(combined_input)
+        features = hidden_state[-1]  # 最后一个层的隐藏状态
+        if return_features:
+            return self.fc(lstm_out), features
+        else:
+            return self.fc(lstm_out)
+    def update_task_features(self, data):
+        """更新任务特征统计"""
+        obs, target, _ = data
+        batch_size = obs.size(0)
+        task_onehot = torch.zeros(batch_size, 1)
+        with torch.no_grad():
+            _, features = self.forward(obs, task_onehot, return_features=True)
+            self.task_features_mean = features.mean(dim=0)
+            # 存储少量原任务样本
+            if self.original_samples is None:
+                self.original_samples = (obs[:5].clone(), target[:5].clone())
 
 class HierarchicalContinualLearner:
     """分层混合专家模型 - 核心实现"""
@@ -98,14 +111,10 @@ class HierarchicalContinualLearner:
         self.num_tasks = 0
         # 记录每个次级分类器对应的原始任务
         self.task_mapping = {}  # 专家ID -> 原始任务ID
-        print(f">>> 初始化分层连续学习器")
-        print(f"    新任务阈值: {new_task_threshold}")
-        print(f"    最大记忆容量: {max_memory}")
     def _extract_features(self, obs):
         """从观测序列中提取特征，用于一级分类器输入"""
-        # 简单策略：取序列的平均值
-        if len(obs.shape) == 3:  # (batch, seq_len, features)
-            return obs.mean(dim=1)  # (batch, features)
+        if len(obs.shape) == 3:
+            return obs.mean(dim=1)
         else:
             return obs
     def _evaluate_expert(self, expert, data, expert_task_id):
@@ -129,11 +138,10 @@ class HierarchicalContinualLearner:
             target_np = target.cpu().numpy().flatten()
             f1 = f1_score(target_np, preds_np, average='macro')
         return f1
-    def _train_secondary_classifier(self, expert, data, epochs=10):
+    def _train_secondary_classifier(self, expert, data, epochs=1000):
         """训练次级分类器"""
         obs, target, _ = data
         batch_size = obs.size(0)
-        # 为这个专家创建任务ID（全为0）
         task_onehot = torch.zeros(batch_size, 1)
         expert.train()
         optimizer = torch.optim.Adam(expert.parameters(), lr=0.001)
@@ -144,7 +152,9 @@ class HierarchicalContinualLearner:
             loss = criterion(outputs.view(-1, MAX_OUTPUT), target.view(-1))
             loss.backward()
             optimizer.step()
-    def _retrain_primary_classifier(self):
+            if epoch % 100 == 0:
+                print(f"Epoch {epoch}, Loss: {loss.item():.4f}")
+    def _retrain_primary_classifier(self, epochs=1000):
         """重新训练一级分类器"""
         if not self.memory:
             return
@@ -169,16 +179,15 @@ class HierarchicalContinualLearner:
         # 训练一级分类器
         optimizer = torch.optim.Adam(self.primary_classifier.parameters(), lr=0.0005)
         criterion = nn.CrossEntropyLoss()
-        # 简单训练几轮（因为数据量不大）
-        for epoch in range(50):
+        for epoch in range(epochs):
             optimizer.zero_grad()
             outputs = self.primary_classifier(X)
             loss = criterion(outputs, y)
             loss.backward()
             optimizer.step()
-            if epoch % 20 == 0:
-                print(f"    一级分类器训练 Epoch {epoch}, Loss: {loss.item():.4f}")
-    def _update_memory(self, data, task_id, num_samples=10):
+            if epoch % 100 == 0:
+                print(f"一级分类器训练 Epoch {epoch}, Loss: {loss.item():.4f}")
+    def _update_memory(self, data, task_id, num_samples=1000):
         """
         更新例题库
         Args:
@@ -189,10 +198,10 @@ class HierarchicalContinualLearner:
         obs, _, _ = data
         batch_size = obs.size(0)
         # 随机选择一些样本存储
-        num_to_store = min(num_samples, batch_size)
-        indices = np.random.choice(batch_size, num_to_store, replace=False)
+        num_to_store = min(num_samples, batch_size * 16)
+        indices = np.random.choice(batch_size * 16, num_to_store, replace=False)
         for idx in indices:
-            obs_sample = obs[idx].unsqueeze(0)  # 保持batch维度
+            obs_sample = obs[idx // 16].unsqueeze(0)  # 保持batch维度
             self.memory.append((obs_sample, task_id))
         # 如果超过最大容量，随机丢弃一些旧的例题
         if len(self.memory) > self.max_memory:
@@ -201,8 +210,8 @@ class HierarchicalContinualLearner:
             # 按索引从大到小删除，避免索引错位
             for idx in sorted(remove_indices, reverse=True):
                 del self.memory[idx]
-            print(f"    记忆库已满，随机丢弃 {num_to_remove} 个例题")
-    def learn_first_task(self, task_idx):
+            print(f"记忆库已满，随机丢弃 {num_to_remove} 个例题")
+    def learn_first_task(self, task_idx, epochs=1000):
         """学习第一个任务"""
         print(f"\n>>> 学习第一个任务: {tasks_to_learn[task_idx]}")
         # 获取训练数据
@@ -215,34 +224,71 @@ class HierarchicalContinualLearner:
             output_size=MAX_OUTPUT,
             num_tasks=1
         )
-        self._train_secondary_classifier(first_expert, train_data, epochs=100)
+        self._train_secondary_classifier(first_expert, train_data, epochs=epochs)
         # 2. 添加到专家列表
         self.secondary_classifiers.append(first_expert)
         self.task_mapping[0] = task_idx  # 专家0对应原始任务task_idx
         self.num_tasks = 1
         # 3. 存储例题
-        self._update_memory(train_data, task_id=0, num_samples=20)
+        self._update_memory(train_data, task_id=0, num_samples=2000)
         # 4. 训练一级分类器（当前只有一类）
-        self._retrain_primary_classifier()
+        self._retrain_primary_classifier(epochs=epochs)
         return 0  # 返回分配的任务ID
-    def learn_new_task(self, task_idx, stage):
-        """
-        学习新任务
-        Args:
-            task_idx: 原始任务索引
-            stage: 学习阶段（用于seed_offset）
-        """
+    def _evaluate_expert_similarity(self, expert, data):
+        """使用特征空间的相似性判断任务相似性"""
+        obs, target, _ = data
+        batch_size = obs.size(0)
+        expert_task_onehot = torch.zeros(batch_size, 1)
+        expert.eval()
+        with torch.no_grad():
+            # 1. 获取模型的中间特征
+            # 修改SecondaryClassifier以暴露特征
+            task_info = expert_task_onehot.unsqueeze(1).repeat(1, obs.size(1), 1)
+            combined_input = torch.cat((obs, task_info), dim=2)
+            # 获取LSTM的隐藏状态特征
+            lstm_out, (hidden_state, cell_state) = expert.lstm(combined_input)
+            # 使用最后一个时间步的隐藏状态作为特征
+            features = hidden_state[-1]  # (batch_size, hidden_size)
+            # 2. 计算特征分布统计量
+            mean_features = features.mean(dim=0)  # (hidden_size,)
+            # 3. 如果有历史特征，计算相似性
+            if hasattr(expert, 'task_features_mean'):
+                # 计算余弦相似度
+                similarity = F.cosine_similarity(
+                    mean_features.unsqueeze(0), 
+                    expert.task_features_mean.unsqueeze(0)
+                ).item()
+                # 4. 考虑F1分数但加权降低
+                outputs = expert.fc(lstm_out)
+                preds = outputs.argmax(dim=-1)
+                preds_np = preds.cpu().numpy().flatten()
+                target_np = target.cpu().numpy().flatten()
+                f1 = f1_score(target_np, preds_np, average='macro')
+                # 综合分数：相似性权重70%，F1权重30%
+                combined_score = 0.7 * similarity + 0.3 * f1
+                return combined_score
+            else:
+                # 第一次评估，只计算F1
+                outputs = expert.fc(lstm_out)
+                preds = outputs.argmax(dim=-1)
+                preds_np = preds.cpu().numpy().flatten()
+                target_np = target.cpu().numpy().flatten()
+                return f1_score(target_np, preds_np, average='macro')
+    def learn_new_task(self, task_idx, stage, epochs=1000):
+        """学习新任务"""
         print(f"\n>>> 学习新任务 [{stage}]: {tasks_to_learn[task_idx]}")
-        # 获取训练数据
         train_data = get_batch(task_idx, batch_size=BATCH_SIZE, seed_offset=stage*1000)
-        # 1. 评估现有专家
-        f1_scores = []
+        # 1. 评估现有专家（使用改进的相似性度量）
+        similarity_scores = []
         for i, expert in enumerate(self.secondary_classifiers):
-            f1 = self._evaluate_expert(expert, train_data, expert_task_id=i)
-            f1_scores.append(f1)
-            print(f"    专家 {i} (原始任务: {tasks_to_learn[self.task_mapping[i]]}) F1: {f1:.4f}")
-        # 2. 判断是否为新任务
-        if not f1_scores or max(f1_scores) < self.new_task_threshold:
+            # 使用多指标融合
+            similarity = self._evaluate_expert_similarity(expert, train_data, i)
+            similarity_scores.append(similarity)
+            print(f"    专家 {i} 相似性: {similarity:.4f} (任务: {tasks_to_learn[self.task_mapping[i]]})")
+        # 2. 判断是否为新任务（动态阈值）
+        max_similarity = max(similarity_scores) if similarity_scores else 0
+        threshold = self._get_dynamic_threshold(stage, max_similarity)
+        if not similarity_scores or max_similarity < threshold:
             # 创建新专家
             print(f"创建新专家 #{len(self.secondary_classifiers)}")
             new_expert = SecondaryClassifier(
@@ -251,24 +297,91 @@ class HierarchicalContinualLearner:
                 output_size=MAX_OUTPUT,
                 num_tasks=1
             )
-            self._train_secondary_classifier(new_expert, train_data, epochs=100)
-            # 添加到专家列表
+            self._train_secondary_classifier(new_expert, train_data, epochs=epochs)
+            new_expert.update_task_features(train_data)  # 更新特征统计
             new_expert_id = len(self.secondary_classifiers)
             self.secondary_classifiers.append(new_expert)
             self.task_mapping[new_expert_id] = task_idx
             self.num_tasks += 1
             assigned_task_id = new_expert_id
         else:
-            # 强化现有最佳专家
-            best_idx = np.argmax(f1_scores)
-            print(f"强化现有专家 #{best_idx} (原始任务: {tasks_to_learn[self.task_mapping[best_idx]]})")
-            self._train_secondary_classifier(self.secondary_classifiers[best_idx], train_data, epochs=100)
+            # 强化现有最佳专家，但使用保护机制
+            best_idx = np.argmax(similarity_scores)
+            best_similarity = similarity_scores[best_idx]
+            print(f"强化现有专家 #{best_idx} (相似性: {best_similarity:.4f})")
+            # 检查是否需要保护原任务知识
+            if best_similarity < 0.85:  # 相似性不够高，需要谨慎
+                print("警告：任务相似性中等，使用保护性训练")
+                self._train_with_protection(
+                    self.secondary_classifiers[best_idx], 
+                    train_data, 
+                    epochs=epochs
+                )
+            else:
+                # 高度相似，可以安全训练
+                self._train_secondary_classifier(
+                    self.secondary_classifiers[best_idx], 
+                    train_data, 
+                    epochs=epochs
+                )
+            # 更新专家特征统计
+            self.secondary_classifiers[best_idx].update_task_features(train_data)
             assigned_task_id = best_idx
         # 3. 存储例题
-        self._update_memory(train_data, task_id=assigned_task_id, num_samples=20)
+        self._update_memory(train_data, task_id=assigned_task_id, num_samples=2000)
         # 4. 重新训练一级分类器
-        self._retrain_primary_classifier()
+        self._retrain_primary_classifier(epochs=1000)
         return assigned_task_id
+    def _train_with_protection(self, expert, new_data, epochs=500):
+        """保护性训练：防止完全覆盖原任务知识"""
+        # 获取原任务样本
+        if expert.original_samples is None:
+            # 如果没有存储，简单训练
+            self._train_secondary_classifier(expert, new_data, epochs//2)
+            return
+        obs_original, target_original = expert.original_samples
+        obs_new, target_new, _ = new_data
+        # 混合训练：新旧任务数据一起训练
+        for epoch in range(epochs):
+            # 交替训练新旧任务
+            if epoch % 2 == 0:
+                # 训练新任务
+                task_onehot = torch.zeros(obs_new.size(0), 1)
+                outputs = expert(obs_new, task_onehot)
+                loss_new = F.cross_entropy(
+                    outputs.view(-1, MAX_OUTPUT), 
+                    target_new.view(-1)
+                )
+            else:
+                # 训练原任务
+                task_onehot = torch.zeros(obs_original.size(0), 1)
+                outputs = expert(obs_original, task_onehot)
+                loss_original = F.cross_entropy(
+                    outputs.view(-1, MAX_OUTPUT), 
+                    target_original.view(-1)
+                )
+            # 组合损失
+            if epoch % 2 == 0:
+                loss = loss_new
+            else:
+                loss = loss_original
+            # 反向传播
+            optimizer = torch.optim.Adam(expert.parameters(), lr=0.001)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            if epoch % 100 == 0:
+                print(f"保护性训练 Epoch {epoch}, Loss: {loss.item():.4f}")
+    def _get_dynamic_threshold(self, stage, max_similarity):
+        """动态调整阈值：随着任务增多，阈值降低"""
+        base_threshold = self.new_task_threshold
+        # 阶段数越多，阈值越低（因为可能越来越难区分）
+        decay_factor = 0.95 ** stage
+        dynamic_threshold = base_threshold * decay_factor
+        # 如果最大相似性很高，可以稍微提高阈值
+        if max_similarity > 0.9:
+            dynamic_threshold = min(dynamic_threshold * 1.1, 0.9)
+        return dynamic_threshold
     def evaluate_task(self, task_idx, eval_seed_offset=9999):
         """评估指定任务"""
         if self.primary_classifier is None or not self.secondary_classifiers:
@@ -282,7 +395,9 @@ class HierarchicalContinualLearner:
         self.primary_classifier.eval()
         with torch.no_grad():
             primary_output = self.primary_classifier(features)
-            predicted_task = primary_output.argmax(dim=1).mode().values.item()
+            probs = F.softmax(primary_output, dim=1)
+            avg_probs = probs.mean(dim=0)
+            predicted_task = avg_probs.argmax().item()
         # 2. 二级分类：选择对应专家进行预测
         if predicted_task < len(self.secondary_classifiers):
             selected_expert = self.secondary_classifiers[predicted_task]
@@ -298,7 +413,6 @@ class HierarchicalContinualLearner:
                 target_np = target.cpu().numpy().flatten()
                 f1 = f1_score(target_np, preds_np, average='macro')
         else:
-            # 如果一级分类器预测了不存在的任务，使用第一个专家
             print(f"警告：一级分类器预测了不存在的任务 {predicted_task}，使用专家0")
             selected_expert = self.secondary_classifiers[0]
             batch_size = obs.size(0)
@@ -313,71 +427,31 @@ class HierarchicalContinualLearner:
         return f1
 
 def main():
-    # 创建分层学习器
     learner = HierarchicalContinualLearner(
         new_task_threshold=0.6,  # F1低于0.6认为是新任务
-        max_memory=2000          # 最大存储2000个例题
+        max_memory=10000          # 最大存储10000个例题
     )
-    # 记录每个阶段的性能
     history = []
-    # 阶段1: 学习第一个任务 (GoNogo)
-    learner.learn_first_task(task_idx=0)  # GoNogo
-    # 评估所有任务
-    stage1_scores = []
     for i in range(len(tasks_to_learn)):
         if i == 0:
-            f1 = learner.evaluate_task(i, eval_seed_offset=9999)
+            learner.learn_first_task(task_idx=i, epochs=EPOCHS)
         else:
-            f1 = 0.0  # 未学习的任务
-        stage1_scores.append(f1)
-    history.append(stage1_scores)
-    print(f"\n阶段1评估结果:")
-    for i, task in enumerate(tasks_to_learn):
-        print(f"  {task}: F1 = {stage1_scores[i]:.4f}")
-    # 阶段2: 学习第二个任务 (DelayComparison)
-    learner.learn_new_task(task_idx=1, stage=2)  # DelayComparison
-    # 评估所有任务
-    stage2_scores = []
-    for i in range(len(tasks_to_learn)):
-        f1 = learner.evaluate_task(i, eval_seed_offset=9999)
-        stage2_scores.append(f1)
-    history.append(stage2_scores)
-    print(f"\n阶段2评估结果:")
-    for i, task in enumerate(tasks_to_learn):
-        print(f"  {task}: F1 = {stage2_scores[i]:.4f}")
-    # 阶段3: 学习第三个任务 (DMS)
-    learner.learn_new_task(task_idx=2, stage=3)  # DMS
-    # 评估所有任务
-    stage3_scores = []
-    for i in range(len(tasks_to_learn)):
-        f1 = learner.evaluate_task(i, eval_seed_offset=9999)
-        stage3_scores.append(f1)
-    history.append(stage3_scores)
-    print(f"\n阶段3评估结果:")
-    for i, task in enumerate(tasks_to_learn):
-        print(f"  {task}: F1 = {stage3_scores[i]:.4f}")
-    # 打印最终统计信息
-    print("\n" + "=" * 80)
-    print("实验总结")
-    print("=" * 80)
-    print(f"创建的专家数量: {len(learner.secondary_classifiers)}")
+            learner.learn_new_task(task_idx=i, stage=i+1, epochs=EPOCHS)
+        stage_i_scores = []
+        for j in range(len(tasks_to_learn)):
+            if j <= i:
+                f1 = learner.evaluate_task(j, eval_seed_offset=9999)
+            else:
+                f1 = 0.0
+            stage_i_scores.append(f1)
+        history.append(stage_i_scores)
+        print(f"\n阶段{i+1}评估结果:")
+        for j, task in enumerate(tasks_to_learn):
+            print(f"  {task}: F1 = {stage_i_scores[j]:.4f}")
+    print(f"\n创建的专家数量: {len(learner.secondary_classifiers)}")
     print(f"一级分类器类别数: {learner.num_tasks}")
     print(f"例题库大小: {len(learner.memory)}")
     print(f"专家映射: {learner.task_mapping}")
-    print("\n性能历史:")
-    print(f"{'阶段':<10} {'GoNogo':<12} {'DelayComp':<12} {'DMS':<12}")
-    for i, scores in enumerate(history):
-        print(f"阶段 {i+1}:  {scores[0]:<10.4f}  {scores[1]:<10.4f}  {scores[2]:<10.4f}")
-    # 分析遗忘情况
-    print("\n遗忘分析:")
-    if len(history) >= 3:
-        # Task 1 (GoNogo) 的遗忘
-        forgetting_task1 = history[0][0] - history[2][0]
-        print(f"任务1 (GoNogo) 遗忘: {history[0][0]:.4f} → {history[2][0]:.4f} (Δ = {forgetting_task1:+.4f})")
-        # Task 2 (DelayComp) 的遗忘
-        if len(history) > 1:
-            forgetting_task2 = history[1][1] - history[2][1]
-            print(f"任务2 (DelayComp) 遗忘: {history[1][1]:.4f} → {history[2][1]:.4f} (Δ = {forgetting_task2:+.4f})")
     return history
 
 if __name__ == "__main__":
