@@ -426,7 +426,7 @@
 
 %文档信息设置
 \title{认知神经科学课程报告\\ Cognitive Neuroscience Final Report}
-\author{苏冠豪\quad 伍昱衡 \quad 尹超 \quad 张硕 \quad 郑子辰 \\\footnotesize （按照姓氏首字母排序）\\ \footnotesize 中国科学院大学，北京 100049\\ \footnotesize University of Chinese Academy of Sciences, Beijing 100049, China}
+\author{苏冠豪\quad 伍昱衡 \quad 尹超 \quad 张硕 \quad 郑子辰 \\\footnotesize （按照姓氏首字母排序）\\ \footnotesize 中国科学院大学，北京 100049\\ \footnotesize University of Chinese Academy of Sciences, Beijing 100049, China \\\footnotesize https://github.com/cn2025666/UCAS2025CognitiveNeuralscience}
 \date{\footnotesize \today}  % 设置日期为编译当天
 % >> --------------------- 文章信息区 --------------------- << %
 % ----------------------------------------------------------- %     
@@ -455,8 +455,8 @@
 
 二、数据
 
-采用模拟生成的认知任务作为训练集。NeuroGym 是基于 OpenAI Gym 开发的神经科学任务开源 Python 工具箱，提供心理学和认知科学常见的行为范式用于人工智能模型的训练 [1]。任务说明参考 Environments — neurogym
-documentation。也可采用其他文献提出的认知任务模拟方式，如 20-Cog-tasks[2]等。）
+采用模拟生成的认知任务作为训练集。NeuroGym 是基于 OpenAI Gym 开发的神经科学任务开源 Python 工具箱，提供心理学和认知科学常见的行为范式用于人工智能模型的训练\cite{molano2022neurogym}。任务说明参考 Environments — neurogym
+documentation。也可采用其他文献提出的认知任务模拟方式，如 20-Cog-tasks\cite{yang2019training}等。）
 
 
 三、课题内容
@@ -504,9 +504,9 @@ documentation。也可采用其他文献提出的认知任务模拟方式，如 
 
 \subsection{模型与训练方法}
 \begin{itemize}
-    \item \textbf{LSTM/GRU/CTRNN}: 代表性循环神经网络结构，具备不同的记忆与动态特性。
+    \item \textbf{LSTM\cite{hochreiter1997long}/GRU\cite{cho2014learning}/CTRNN\cite{beer1995dynamical}}: 代表性循环神经网络结构，具备不同的记忆与动态特性。
     \item \textbf{顺序学习（Sequential Learning）}: 按顺序依次训练多个任务，考察灾难性遗忘现象。
-    \item \textbf{弹性权重固化（EWC）}: 通过对重要参数加以约束，缓解灾难性遗忘。
+    \item \textbf{弹性权重固化（EWC）\cite{kirkpatrick2017overcoming}}: 通过对重要参数加以约束，缓解灾难性遗忘。
 \end{itemize}
 
 
@@ -630,11 +630,11 @@ LSTM和GRU由于门控机制，在长时依赖和任务切换时表现出更好�
 以基线学习为对照，探究四种连续学习算法对抗灾难性遗忘的效果。
 \begin{enumerate}
     \item Baseline (Fine-tuning)：无任何保护机制，直接在新任务上训练。作为衡量遗忘程度的下界。
-    \item EWC (Elastic Weight Consolidation)：基于贝叶斯推断，利用 Fisher 信息矩阵估计参数对旧任务的重要性，在损失函数中添加二次惩罚项 
+    \item EWC (Elastic Weight Consolidation)\cite{kirkpatrick2017overcoming}：基于贝叶斯推断，利用 Fisher 信息矩阵估计参数对旧任务的重要性，在损失函数中添加二次惩罚项 
     $$ \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{curr}} + \frac{\lambda}{2} \sum_{i} F_i (\theta_i - \theta_{i,\text{old}})^2$$
-    \item Online EWC：针对长序列任务改进的 EWC，引入衰减因子（Decay=1.0）动态更新累积 Fisher 矩阵，旨在更高效地处理多阶段任务。
-    \item Experience Replay (ER)：维护一个极小的 Episodic Memory Buffer (Size=20)，在训练新任务时，随机抽取旧任务样本与新样本混合训练。模拟生物海马体的回放机制。
-    \item A-GEM (Averaged Gradient Episodic Memory)：不直接重放旧数据，而是利用旧数据计算参考梯度。若新任务梯度与参考梯度夹角超过90度（点积为负），则将新梯度投影到与旧梯度正交的方向，以此保证新任务的学习不增加旧任务的损失。
+    \item Online EWC\cite{schwarz2018progress}：针对长序列任务改进的 EWC，引入衰减因子（Decay=1.0）动态更新累积 Fisher 矩阵，旨在更高效地处理多阶段任务。
+    \item Experience Replay (ER)\cite{chaudhry2019tiny}：维护一个极小的 Episodic Memory Buffer (Size=20)，在训练新任务时，随机抽取旧任务样本与新样本混合训练。模拟生物海马体的回放机制。
+    \item A-GEM (Averaged Gradient Episodic Memory)\cite{chaudhry2018efficient}：不直接重放旧数据，而是利用旧数据计算参考梯度。若新任务梯度与参考梯度夹角超过90度（点积为负），则将新梯度投影到与旧梯度正交的方向，以此保证新任务的学习不增加旧任务的损失。
 \end{enumerate}
 
 \section{实验结果与分析}
@@ -1003,10 +1003,10 @@ def get_batch(task_idx, batch_size=16, seed_offset=0):
 
 % ----------------------------------------------------------- %
 % >> ---------------------- 参考文献 ---------------------- << %
-% \nocite{*}
-% \bibliography{re}
-% \thispagestyle{fancy} 
-% \addcontentsline{toc}{chapter}{参考文献}
+\nocite{*}
+\bibliography{re}
+\thispagestyle{fancy} 
+\addcontentsline{toc}{chapter}{参考文献}
 %这里要用到 bibtex，使用xelatex->bibtex->xelatex->xelatex编译链
 %同时要把re.bib文件放在同一目录下
 %下面是re.bib文件的内容

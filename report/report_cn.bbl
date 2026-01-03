@@ -1,0 +1,48 @@
+\begin{thebibliography}{1}
+
+\bibitem{molano2022neurogym}
+Manuel Molano-Mazon, Jeremy Ramise, Guangyu~Robert Gan, Theofanis~I Panagiotaropoulos, A~Pixley, Kanaka Rajan, Francisco Rodrigues, H~Wang, Guangyu~Robert Yang, et~al.
+\newblock Neurogym: An open resource for developing and sharing neuroscience tasks.
+\newblock {\em Proceedings of the Computational Cognitive Neuroscience Conference}, 2022.
+
+\bibitem{yang2019training}
+Guangyu~Robert Yang, Madhura~R Joglekar, H~Francis Song, William~T Newsome, and Xiao-Jing Wang.
+\newblock Task representations in neural networks trained to perform many cognitive tasks.
+\newblock {\em Nature neuroscience}, 22(2):297--306, 2019.
+
+\bibitem{hochreiter1997long}
+Sepp Hochreiter and J{\"u}rgen Schmidhuber.
+\newblock Long short-term memory.
+\newblock {\em Neural computation}, 9(8):1735--1780, 1997.
+
+\bibitem{cho2014learning}
+Kyunghyun Cho, Bart van Merri{\"e}nboer, Caglar Gulcehre, Dzmitry Bahdanau, Fethi Bougares, Holger Schwenk, and Yoshua Bengio.
+\newblock Learning phrase representations using rnn encoder--decoder for statistical machine translation.
+\newblock In {\em Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing (EMNLP)}, pages 1724--1734, 2014.
+
+\bibitem{beer1995dynamical}
+Randall~D Beer.
+\newblock On the dynamics of small continuous-time recurrent neural networks.
+\newblock {\em Adaptive behavior}, 3(4):469--509, 1995.
+
+\bibitem{kirkpatrick2017overcoming}
+James Kirkpatrick, Razvan Pascanu, Neil Rabinowitz, Joel Veness, Guillaume Desjardins, Andrei~A Rusu, Kieran Milan, John Quan, Tiago Ramalho, Agnieszka Grabska-Barwinska, et~al.
+\newblock Overcoming catastrophic forgetting in neural networks.
+\newblock {\em Proceedings of the national academy of sciences}, 114(13):3521--3526, 2017.
+
+\bibitem{schwarz2018progress}
+Jonathan Schwarz, Wojciech Czarnecki, Jelena Luketina, Agnieszka Grabska-Barwinska, Yee~Whye Teh, Razvan Pascanu, and Raia Hadsell.
+\newblock Progress \& compress: A scalable framework for continual learning.
+\newblock {\em International Conference on Machine Learning}, pages 4528--4537, 2018.
+
+\bibitem{chaudhry2019tiny}
+Arslan Chaudhry, Marcus Rohrbach, Mohamed Elhoseiny, Thalaiyasingam Ajanthan, Puneet~K Dokania, Philip~HS Torr, and Marc'Aurelio Ranzato.
+\newblock Continual learning with tiny episodic memories.
+\newblock {\em arXiv preprint arXiv:1902.10486}, 2019.
+
+\bibitem{chaudhry2018efficient}
+Arslan Chaudhry, Marc'Aurelio Ranzato, Marcus Rohrbach, and Mohamed Elhoseiny.
+\newblock Efficient lifelong learning with a-gem.
+\newblock In {\em International Conference on Learning Representations}, 2018.
+
+\end{thebibliography}
