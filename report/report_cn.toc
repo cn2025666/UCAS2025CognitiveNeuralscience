@@ -1,5 +1,5 @@
-\contentsline {chapter}{序言}{I}{Doc-Start}%
-\contentsline {chapter}{目录}{III}{chapter*.1}%
+\contentsline {chapter}{序言}{II}{Doc-Start}%
+\contentsline {chapter}{目录}{IV}{chapter*.1}%
 \contentsline {chapter}{\numberline {1}Part 1: 基线环境下的认知任务与连续学习实验}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}任务描述与评价指标}{1}{section.1.1}%
 \contentsline {section}{\numberline {1.2}实验设置与流程}{1}{section.1.2}%

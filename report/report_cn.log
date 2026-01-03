@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.8.11)  3 JAN 2026 12:42
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.8.11)  3 JAN 2026 13:03
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1573,18 +1573,42 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 443.
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
-] [1] (./report_cn.toc
+] [1]
+
+Package fontspec Info: Could not resolve font "FangSong/BI" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: Could not resolve font "FangSong/B" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: Could not resolve font "FangSong/I" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: Font family 'FangSong(0)' created for font 'FangSong'
+(fontspec)             with options [Script={CJK}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"FangSong/OT:script=hani;language=dflt;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.: 
+
+
 
 LaTeX Font Warning: Font shape `U/rsfs/m/n' in size <10.53937> not available
-(Font)              size <10.95> substituted on input line 4.
+(Font)              size <10.95> substituted on input line 512.
 
-[2
+[2] (./report_cn.toc [3
 
 ])
 \tf@toc=\write8
 \openout8 = `report_cn.toc'.
 
- [3]
+ [4]
 Chapter 1.
 File: assets/part1/change.png Graphic file (type bmp)
 <assets/part1/change.png>
@@ -1602,14 +1626,14 @@ File: assets/part1/ewc.png Graphic file (type bmp)
 Chapter 2.
 
 Package hyperref Warning: The anchor of a bookmark and its parent's must not
-(hyperref)                be the same. Added a new anchor on input line 650.
+(hyperref)                be the same. Added a new anchor on input line 690.
 
 [5
 
 ]
 
 Package hyperref Warning: The anchor of a bookmark and its parent's must not
-(hyperref)                be the same. Added a new anchor on input line 677.
+(hyperref)                be the same. Added a new anchor on input line 717.
 
 [6]
 File: assets/part2/5methods_F1.png Graphic file (type bmp)
@@ -1648,30 +1672,7 @@ File: assets/part3/HME_task2f1_matrix.png Graphic file (type bmp)
 <assets/part3/HME_task2f1_matrix.png>
  [15] [16]
 Chapter 4.
-
-Package fontspec Info: Could not resolve font "FangSong/BI" (it probably
-(fontspec)             doesn't exist).
-
-
-Package fontspec Info: Could not resolve font "FangSong/B" (it probably
-(fontspec)             doesn't exist).
-
-
-Package fontspec Info: Could not resolve font "FangSong/I" (it probably
-(fontspec)             doesn't exist).
-
-
-Package fontspec Info: Font family 'FangSong(0)' created for font 'FangSong'
-(fontspec)             with options [Script={CJK}].
-(fontspec)              
-(fontspec)              This font family consists of the following NFSS
-(fontspec)             series/shapes:
-(fontspec)              
-(fontspec)             - 'normal' (m/n) with NFSS spec.:
-(fontspec)             <->"FangSong/OT:script=hani;language=dflt;"
-(fontspec)             - 'small caps'  (m/sc) with NFSS spec.: 
-
-Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on input line 875.
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on input line 915.
 [17
 
 ]
@@ -1702,12 +1703,12 @@ Package rerunfilecheck Info: File `report_cn.out' has not changed.
 (rerunfilecheck)             Checksum: 43EC7DBA198B19008933A7A11471F2CC;6822.
  ) 
 Here is how much of TeX's memory you used:
- 58032 strings out of 476720
- 1386162 string characters out of 5801444
+ 58033 strings out of 476720
+ 1386179 string characters out of 5801444
  2106842 words of memory out of 5000000
- 79091 multiletter control sequences out of 15000+600000
+ 79092 multiletter control sequences out of 15000+600000
  572985 words of font info for 167 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  94i,11n,102p,1617b,2912s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on report_cn.pdf (26 pages).
+Output written on report_cn.pdf (27 pages).
