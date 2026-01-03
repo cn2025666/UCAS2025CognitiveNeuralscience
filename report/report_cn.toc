@@ -48,3 +48,5 @@
 \contentsline {subsection}{\numberline {4.3.1}环境复杂度对模型性能的影响}{18}{subsection.4.3.1}%
 \contentsline {subsection}{\numberline {4.3.2}真实环境对灾难性遗忘的影响}{20}{subsection.4.3.2}%
 \contentsline {chapter}{\numberline {5}总结陈述}{21}{chapter.5}%
+\contentsline {section}{\numberline {5.1}主要发现}{21}{section.5.1}%
+\contentsline {section}{\numberline {5.2}综合展望}{21}{section.5.2}%
